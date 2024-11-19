@@ -11,5 +11,5 @@ export default {
 		extend: {}
 	},
 
-	plugins: [skeleton({ themes: [themes.mint] }), typography, forms]
+	plugins: [skeleton({ themes: [themes.mint, themes.terminus] }), typography, forms]
 } satisfies Config;
