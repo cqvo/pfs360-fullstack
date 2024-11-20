@@ -1,15 +1,8 @@
 import { pgTable, serial, varchar, timestamp, foreignKey, unique, integer, text, jsonb } from "drizzle-orm/pg-core"
-  import { sql } from "drizzle-orm"
+import { relations } from "drizzle-orm/relations";
+import { sql } from "drizzle-orm"
 import { json } from "@sveltejs/kit";
 
-
-
-// export const dimItemStatus = pgTable("dim_item_status", {
-// 	id: serial("id").primaryKey().notNull(),
-// 	status: varchar("status"),
-// 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
-// 	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
-// });
 
 export const dimItems = pgTable("dim_items", {
 	id: serial("id").primaryKey(),
@@ -88,13 +81,6 @@ export const factPlaidWebhookEvents = pgTable("fact_plaid_webhook_events", {
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull()
 });
 
-// export const dimRequestStatus = pgTable("dim_request_status", {
-// 	id: serial("id").primaryKey().notNull(),
-// 	status: varchar("status"),
-// 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
-// 	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
-// });
-
 export const factReportRequests = pgTable("fact_report_requests", {
 	id: serial("id").primaryKey(),
 	plaidReportId: varchar("plaid_report_id").unique().notNull(),
@@ -109,3 +95,23 @@ export const factReportRequests = pgTable("fact_report_requests", {
 	completedAt: timestamp("completed_at", { mode: 'string' }),
 	data: jsonb("data"),
 });
+
+export const dimClientsRelations = relations(dimClients, ({many}) => ({
+	dimItems: many(dimItems),
+	factLinkRequests: many(factLinkRequests),
+	factPlaidApiEvents: many(factPlaidApiEvents),
+	factReportRequests: many(factReportRequests),
+}));
+
+export const dimItemsRelations = relations(dimItems, ({one, many}) => ({
+	dimClient: one(dimClients, {
+		fields: [dimItems.clientId],
+		references: [dimClients.id]
+	}),
+	dimAccounts: many(dimAccounts),
+	dimInstitution: one(dimInstitutions, {
+		fields: [dimItems.institutionId],
+		references: [dimInstitutions.id]
+	}),
+	factPlaidApiEvents: many(factPlaidApiEvents),
+}));

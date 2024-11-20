@@ -40,8 +40,17 @@ export const retrieveClients = async () => {
  *
  * @returns {object} a user.
  */
+// export const retrieveClientsItems = async () => {
+//     const result = await db.select().from(dimClients)
+//     .leftJoin(dimItems, eq(dimClients.id, dimItems.clientId));
+//     return result;
+// };
+
 export const retrieveClientsItems = async () => {
-    const result = await db.select().from(dimClients)
-    .leftJoin(dimItems, eq(dimClients.id, dimItems.clientId));
+    const result = await db.query.dimClients.findMany({
+        with: {
+            dimItems: true
+        }
+    });
     return result;
-};
+}
