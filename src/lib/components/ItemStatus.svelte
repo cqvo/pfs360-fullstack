@@ -1,19 +1,30 @@
 <script>
-    let itemStatus = $props();
+    let { status = 'null' } = $props();
 </script>
 
+{#if status === 'Error'}
+<button type="button" class="chip preset-tonal-error">ERROR</button>
+{:else if status === 'Warning'}
+<button type="button" class="chip preset-tonal-warning">WARN</button>
+{:else if status === 'Active'}
+<button type="button" class="chip preset-tonal-success">OK</button>
+{:else}
+<button type="button" class="chip preset-tonal">UNK</button>
+{/if}
+
+<!-- 
 {#snippet itemStatusChip(text: string, color: string)}
     <button type="button" class="chip preset-tonal-{color}">
         {text}
     </button>
 {/snippet}
 
-{#if if itemStatus === 'Warning'}
+{#if status === 'Warning'}
     {@render itemStatusChip('WARN', 'warning')}
-{:else if itemStatus === 'Error'}
+{:else if status === 'Error'}
     {@render itemStatusChip('ERROR', 'error')}
-{:else if itemStatus}
-    {@render itemStatusChip('OK', 'success')}
-{:else}
+{:else if status === 'Active'}
     {@render itemStatusChip('UNK', '')}
-{/if}
+{:else }
+    {@render itemStatusChip('OK', 'success')}
+{/if} -->

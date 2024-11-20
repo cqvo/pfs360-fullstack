@@ -1,5 +1,5 @@
 import { db } from '$lib/server/database';
-import { dimClients, dimItems } from '$lib/server/database/schema';
+import { dimAccounts, dimClients, dimItems, dimInstitutions } from '$lib/server/database/schema';
 import { eq, lt, gte, ne } from 'drizzle-orm';
 
 /**
@@ -30,7 +30,7 @@ export const upsertClient = async (client: Client) => {
  *
  * @returns {object} a user.
  */
-export const retrieveClients = async () => {
+export const retrieveClients = async (): Promise<object> => {
     const clients = await db.select().from(dimClients);
     return clients;
 };
@@ -40,8 +40,38 @@ export const retrieveClients = async () => {
  *
  * @returns {object} a user.
  */
-export const retrieveClientsItems = async () => {
+export const retrieveClientsItems = async (): Promise<object> => {
     const result = await db.select().from(dimClients)
-    .leftJoin(dimItems, eq(dimClients.id, dimItems.clientId));
+    .leftJoin(dimItems, eq(dimClients.id, dimItems.clientId))
+    .leftJoin(dimAccounts, eq(dimItems.id, dimAccounts.itemId))
+    .leftJoin(dimInstitutions, eq(dimItems.institutionId, dimInstitutions.id));
     return result;
 };
+
+/**
+ * Retrieves a client by id.
+ *
+ * @param {number} id - the client id.
+ * @returns {object} a client.
+ */
+export const retrieveClientById = async (id: number): Promise<object> => {
+    const client = await db.select().from(dimClients)
+    .where(eq(dimClients.id, id));
+    return client;
+}
+
+/**
+ * Retrieves a client by id and their items.
+ *
+ * @param {number} id - the client id.
+ * @returns {object} a client.
+ */
+export const retrieveClientItemsById = async (id: number): Promise<object> => {
+    const result = await db.select().from(dimClients)
+        .leftJoin(dimItems, eq(dimClients.id, dimItems.clientId))
+        .leftJoin(dimAccounts, eq(dimItems.id, dimAccounts.itemId))
+        .leftJoin(dimInstitutions, eq(dimItems.institutionId, dimInstitutions.id))
+        .where(eq(dimClients.id, id));
+    const client = result[0];
+    return client;
+}
