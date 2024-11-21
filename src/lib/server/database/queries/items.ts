@@ -6,15 +6,14 @@ import { dimInstitutions, dimItems, dimClients } from '$lib/server/database/sche
 /**
  * Updates the status for a single item.
  *
- * @param {string} itemId the Plaid item ID of the item.
+ * @param {string} plaidItemId the Plaid item ID of the item.
  * @param {number} status the status of the item.
  */
-export const updateItemStatus = async (itemId: string, status: string): Promise<void> => {
+export const updateItemStatus = async (plaidItemId: string, status: string): Promise<void> => {
   const items = await db.update(dimItems)
     .set({ status: status })
-    .where(eq(dimItems.id, itemId));
+    .where(eq(dimItems.plaidItemId, plaidItemId));
 }
-
 
 /**
  * Retrieves a single item.

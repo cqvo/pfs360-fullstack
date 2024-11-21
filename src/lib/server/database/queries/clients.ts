@@ -30,7 +30,7 @@ export const upsertClient = async (client: Client) => {
  *
  * @returns {object} a user.
  */
-export const retrieveClients = async () => {
+export const retrieveClients = async (): Promise<object> => {
     const clients = await db.select().from(dimClients);
     return clients;
 };

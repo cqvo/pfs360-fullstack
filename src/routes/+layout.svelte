@@ -3,6 +3,7 @@
 	let { children } = $props();
 	import { AppBar, Navigation } from '@skeletonlabs/skeleton-svelte';
 	import { LayoutGrid, Menu, Users, FileText, CloudUpload } from 'lucide-svelte';
+	import { LayoutGrid, Menu, Users, FileText, CloudUpload } from 'lucide-svelte';
 </script>
 
 <header class="flex h-min justify-center gap-2 p-2">
