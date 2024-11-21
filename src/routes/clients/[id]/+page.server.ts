@@ -1,12 +1,10 @@
 import type { PageServerLoad } from './$types';
-import { db } from '$lib/server/database';
-import { eq } from 'drizzle-orm';
-import { dimClients } from '$lib/server/database/schema';
+import { retrieveClientById } from '$lib/server/database/queries/clients';
+import { retrieveItemsAccountsByClientId } from '$lib/server/database/queries/items';
 export const load: PageServerLoad = async ({ params }) => {
-	// @ts-ignore
-	const client = await db.select().from(dimClients)
-		.where(eq(dimClients.id, params.id));
+	const items = await retrieveItemsAccountsByClientId(params.id);
+	const client = await retrieveClientById(params.id)
 	return {
-		client
+		items, client
 	};
 }

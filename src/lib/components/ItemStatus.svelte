@@ -1,19 +1,19 @@
-<script>
-    let itemStatus = $props();
+<script lang="ts">
+    let { status } = $props();
 </script>
 
 {#snippet itemStatusChip(text: string, color: string)}
-    <button type="button" class="chip preset-tonal-{color}">
+    <span class="chip preset-tonal-{color}">
         {text}
-    </button>
+    </span>
 {/snippet}
 
-{#if if itemStatus === 'Warning'}
+{#if status === 'Warning'}
     {@render itemStatusChip('WARN', 'warning')}
-{:else if itemStatus === 'Error'}
+{:else if status === 'Error'}
     {@render itemStatusChip('ERROR', 'error')}
-{:else if itemStatus}
+{:else if status === 'Active'}
     {@render itemStatusChip('OK', 'success')}
 {:else}
-    {@render itemStatusChip('UNK', '')}
+    {@render itemStatusChip('N/A', '')}
 {/if}

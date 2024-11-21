@@ -1,6 +1,6 @@
-import { db } from '$lib/server/database';
+import db from '$lib/server/database';
 import { dimClients, dimItems } from '$lib/server/database/schema';
-import { eq, lt, gte, ne } from 'drizzle-orm';
+import { sql, eq, lt, gte, ne } from 'drizzle-orm';
 
 /**
  * Interface for a client object, not originating from the database.
@@ -35,6 +35,12 @@ export const retrieveClients = async () => {
     return clients;
 };
 
+export const retrieveClientById = async (clientId: number) => {
+    const clients = await db.select().from(dimClients)
+        .where(eq(dimClients.id, clientId));
+    return clients[0];
+};
+
 /**
  * Retrieves all clients and their items.
  *
@@ -53,4 +59,36 @@ export const retrieveClientsItems = async () => {
         }
     });
     return result;
+}
+
+export const retrieveClientItemsById = async (clientId: number) => {
+    const result = await db.query.dimClients.findMany({
+        where: (dimClients, { eq }) => eq(dimClients.id, clientId),
+        with: {
+            dimItems: {
+                with: {
+                    dimAccounts: true
+                },
+            },
+        }
+    });
+    return result[0];
+}
+
+export const retrieveClientAccountsById = async (clientId: number) => {
+    const result = await db.execute(sql`
+        SELECT a.id        AS id,
+        c.company_name as company,
+        a.name      AS name,
+        a.type      AS type,
+        a.subtype   AS subtype,
+        n.name      AS institution,
+        i.status    AS status
+        FROM dim_accounts a
+        LEFT JOIN dim_items i ON a.item_id = i.id
+        LEFT JOIN dim_institutions n ON i.institution_id = n.id
+        LEFT JOIN dim_clients c ON i.client_id = c.id
+        WHERE i.client_id = ${clientId};
+        `);
+    return result.rows;
 }
