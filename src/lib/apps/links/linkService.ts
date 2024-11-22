@@ -2,7 +2,6 @@ import { retrieveClientById } from '$lib/server/database/queries/clients';
 import plaid from '$lib/server/plaid';
 
 import { PLAID_CLIENT_NAME, PLAID_EMAIL } from '$env/static/private';
-import { PLAID_WEBHOOK_URL } from '$env/dynamic/private';
 
 const linkService = {
     constructLinkCreateRequest: async (clientId: number) => {
@@ -17,7 +16,7 @@ const linkService = {
                 products: ['assets'],
                 country_codes: ['US'],
                 language: 'en',
-                webhook: PLAID_WEBHOOK_URL || 'https://webhook.example.com',
+                webhook: 'https://webhook.example.com',
                 hosted_link: { delivery_method: 'email' }
             };
             return request;
