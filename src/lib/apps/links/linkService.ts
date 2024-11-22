@@ -1,7 +1,6 @@
 import { retrieveClientById } from '$lib/server/database/queries/clients';
 import plaid from '$lib/server/plaid';
-import { PLAID_CLIENT_NAME, VERCEL_ENV, VERCEL_PROJECT_PRODUCTION_URL, VERCEL_URL } from '$env/static/private';
-import { PLAID_EMAIL } from '$env/dynamic/private';
+import { PLAID_CLIENT_NAME, PLAID_EMAIL, VERCEL_ENV, VERCEL_PROJECT_PRODUCTION_URL, VERCEL_URL } from '$env/static/private';
 
 const webhookRoute = '/api/v1/webhook';
 const baseUrl = VERCEL_ENV === 'production' ? VERCEL_PROJECT_PRODUCTION_URL : VERCEL_URL;
