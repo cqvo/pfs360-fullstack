@@ -1,4 +1,4 @@
-import type { LinkRequest, ItemAddResultRequest } from '$lib/apps/links/linkTypes';
+import type { newLinkRequest, ItemAddResultRequest } from '$lib/apps/links/linkTypes';
 import service from '$lib/apps/links/linkService';
 import model from '$lib/apps/links/linkModel';
 import plaid from '$lib/server/plaid';
@@ -10,12 +10,13 @@ const linkController = {
             const request = await service.constructLinkCreateRequest(clientId);
             const response = await plaid.linkTokenCreate(request);
 
-            const linkRequest: LinkRequest = {
+            const linkRequest: newLinkRequest = {
+                clientId: clientId,
                 linkToken: response.data['link_token'],
-                expiration: response.data['expiration'],
+                expiration: new Date(response.data['expiration']),
                 requestId: response.data['request_id'],
             };
-            const link = await model.insertLinkRequest(linkRequest);
+            const link = await model.insertNewLinkRequest(linkRequest);
 
             return link;
         } catch (error) {

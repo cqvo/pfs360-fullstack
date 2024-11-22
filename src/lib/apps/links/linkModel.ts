@@ -2,13 +2,17 @@ import db from '$lib/server/database';
 import { dimInstitutions, dimItems, factLinkRequests } from '$lib/server/database/schema';
 import { sql, eq, lt, gte, ne } from 'drizzle-orm';
 import { encrypt, decrypt } from '$lib/server/crypto';
+import type { newLinkRequest, ItemAddResultRequest } from '$lib/apps/links/linkTypes';
 
 const linkModel = {
-    insertLinkRequest: async (linkRequest) => {
+    insertNewLinkRequest: async (linkRequest: newLinkRequest) => {
         try {
             const link = await db
                 .insert(factLinkRequests)
-                .values(linkRequest)
+                .values({
+                    ...linkRequest,
+                    expiration: linkRequest.expiration.toISOString(),
+                })
                 .returning();
             return link;
         } catch (error) {

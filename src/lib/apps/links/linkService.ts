@@ -12,7 +12,7 @@ const linkService = {
             const client = await retrieveClientById(clientId);
             const request = {
                 user: {
-                    client_user_id: client.id,
+                    client_user_id: client.taxdomeId,
                     email_address: PLAID_EMAIL || 'cqvo@proton.me',
                 },
                 client_name: PLAID_CLIENT_NAME || 'PFS 360',
