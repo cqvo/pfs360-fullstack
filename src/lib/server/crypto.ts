@@ -3,7 +3,7 @@ import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
 import { ENCRYPTION_KEY } from '$env/static/private';
 
 const algorithm: string = 'aes-256-cbc';
-const key = Buffer.from(ENCRYPTION_KEY, 'hex');
+const key: CipherKey = Buffer.from(ENCRYPTION_KEY, 'hex');
 
 export const encrypt = async (plaintext: string) => {
 	// Use key and random IV to create cipher, then encrypt plaintext
