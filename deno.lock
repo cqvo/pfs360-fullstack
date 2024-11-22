@@ -1,6 +1,13 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@std/assert@^1.0.8": "1.0.8",
+    "jsr:@std/data-structures@^1.0.4": "1.0.4",
+    "jsr:@std/fs@^1.0.5": "1.0.5",
+    "jsr:@std/internal@^1.0.5": "1.0.5",
+    "jsr:@std/path@^1.0.7": "1.0.8",
+    "jsr:@std/path@^1.0.8": "1.0.8",
+    "jsr:@std/testing@^1.0.5": "1.0.5",
     "npm:@neondatabase/serverless@~0.9.4": "0.9.5",
     "npm:@skeletonlabs/skeleton-svelte@^1.0.0-next.13": "1.0.0-next.13_svelte@5.2.2__acorn@8.14.0",
     "npm:@skeletonlabs/skeleton@^3.0.0-next.9": "3.0.0-next.9_tailwindcss@3.4.15__postcss@8.4.49",
@@ -35,6 +42,39 @@
     "npm:typescript@5": "5.6.3",
     "npm:vite@^5.0.3": "5.4.11",
     "npm:winston@^3.17.0": "3.17.0"
+  },
+  "jsr": {
+    "@std/assert@1.0.8": {
+      "integrity": "ebe0bd7eb488ee39686f77003992f389a06c3da1bbd8022184804852b2fa641b",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/data-structures@1.0.4": {
+      "integrity": "fa0e20c11eb9ba673417450915c750a0001405a784e2a4e0c3725031681684a0"
+    },
+    "@std/fs@1.0.5": {
+      "integrity": "41806ad6823d0b5f275f9849a2640d87e4ef67c51ee1b8fb02426f55e02fd44e",
+      "dependencies": [
+        "jsr:@std/path@^1.0.7"
+      ]
+    },
+    "@std/internal@1.0.5": {
+      "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
+    },
+    "@std/path@1.0.8": {
+      "integrity": "548fa456bb6a04d3c1a1e7477986b6cffbce95102d0bb447c67c4ee70e0364be"
+    },
+    "@std/testing@1.0.5": {
+      "integrity": "6e693cbec94c81a1ad3df668685c7ba8e20742bb10305bc7137faa5cf16d2ec4",
+      "dependencies": [
+        "jsr:@std/assert",
+        "jsr:@std/data-structures",
+        "jsr:@std/fs",
+        "jsr:@std/internal",
+        "jsr:@std/path@^1.0.8"
+      ]
+    }
   },
   "npm": {
     "@alloc/quick-lru@5.2.0": {
@@ -2874,6 +2914,10 @@
     }
   },
   "workspace": {
+    "dependencies": [
+      "jsr:@std/assert@^1.0.8",
+      "jsr:@std/testing@^1.0.5"
+    ],
     "packageJson": {
       "dependencies": [
         "npm:@neondatabase/serverless@~0.9.4",
