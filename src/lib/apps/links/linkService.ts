@@ -1,7 +1,10 @@
 import { retrieveClientById } from '$lib/server/database/queries/clients';
 import plaid from '$lib/server/plaid';
+import { PLAID_CLIENT_NAME, PLAID_EMAIL, VERCEL_ENV, VERCEL_PROJECT_PRODUCTION_URL, VERCEL_URL } from '$env/static/private';
 
-import { PLAID_CLIENT_NAME, PLAID_EMAIL } from '$env/static/private';
+const webhookRoute = '/api/v1/webhook';
+const baseUrl = VERCEL_ENV === 'production' ? VERCEL_PROJECT_PRODUCTION_URL : VERCEL_URL;
+const WEBHOOK_URL = `https://${baseUrl}${webhookRoute}`;
 
 const linkService = {
     constructLinkCreateRequest: async (clientId: number) => {
@@ -16,7 +19,7 @@ const linkService = {
                 products: ['assets'],
                 country_codes: ['US'],
                 language: 'en',
-                webhook: 'https://webhook.example.com',
+                webhook: WEBHOOK_URL,
                 hosted_link: { delivery_method: 'email' }
             };
             return request;
