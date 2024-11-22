@@ -29,6 +29,20 @@
       "when": 1732119688679,
       "tag": "0003_free_microchip",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1732252872324,
+      "tag": "0004_many_triton",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1732252903835,
+      "tag": "0005_thankful_riptide",
+      "breakpoints": true
     }
   ]
 }

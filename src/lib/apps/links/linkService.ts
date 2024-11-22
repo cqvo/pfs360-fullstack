@@ -1,9 +1,7 @@
 import { retrieveClientById } from '$lib/server/database/queries/clients';
 import plaid from '$lib/server/plaid';
 
-const PLAID_CLIENT_NAME = Deno.env.get('PLAID_CLIENT_NAME') || 'PFS 360';
-const PLAID_EMAIL = Deno.env.get('PLAID_EMAIL') || 'cqvo@proton.me';
-const PLAID_WEBHOOK_URL = Deno.env.get('PLAID_WEBHOOK_URL') || '';
+import { PLAID_CLIENT_NAME, PLAID_EMAIL, PLAID_WEBHOOK_URL } from '$env/static/private';
 
 const linkService = {
     constructLinkCreateRequest: async (clientId: number) => {
@@ -12,7 +10,7 @@ const linkService = {
             const request = {
                 user: {
                     client_user_id: client.id,
-                    email_address: PLAID_EMAIL
+                    email_address: PLAID_EMAIL || 'cqvo@proton.me',
                 },
                 client_name: PLAID_CLIENT_NAME || 'PFS 360',
                 products: ['assets'],

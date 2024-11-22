@@ -11,7 +11,6 @@ export const dimItems = pgTable("dim_items", {
 	clientId: integer("client_id").notNull().references(() => dimClients.id),
 	institutionId: integer("institution_id").notNull().references(() => dimInstitutions.id),
 	status: varchar("status").notNull(),
-	keyDate: varchar("key_date"),
 	keyIv: varchar("key_iv"),
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
 	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
@@ -50,7 +49,7 @@ export const factLinkRequests = pgTable("fact_link_requests", {
 	linkToken: varchar("link_token").unique().notNull(),
 	clientId: integer("client_id").notNull().references(() => dimClients.id),
 	requestId: varchar("request_id").unique().notNull(),
-	status: varchar("request_status_id").default('Pending').notNull(),
+	status: varchar("status").default('Pending').notNull(),
 	linkSessionId: varchar("link_session_id"),
 	errorType: varchar("error_type"),
 	errorCode: varchar("error_code"),
@@ -126,18 +125,3 @@ export const dimAccountsRelations = relations(dimAccounts, ({one}) => ({
 		references: [dimItems.id]
 	})
 }));
-
-// View definitions
-// export const Accounts = pgView("vw_accounts").as((qb) => 
-// 	qb.select({
-// 		accountId: dimAccounts.id,
-// 		clientId: dimItems.clientId,
-// 		accountName: dimAccounts.name,
-// 		accountType: dimAccounts.type,
-// 		accountSubtype: dimAccounts.subtype,
-// 		institutionName: dimInstitutions.name,
-// 	})
-// 	.from(dimAccounts)
-// 	.leftJoin(dimItems, eq(dimAccounts.itemId, dimItems.id))
-// 	.leftJoin(dimInstitutions, eq(dimItems.institutionId, dimInstitutions.id))
-// );

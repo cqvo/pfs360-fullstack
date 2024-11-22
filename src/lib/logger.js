@@ -1,6 +1,5 @@
 import winston from 'winston';
-
-const NODE_ENV = Deno.env.get('NODE_ENV') || 'development';
+import { NODE_ENV } from '$env/static/private';
 
 const enumerateErrorFormat = winston.format((info) => {
 	if (info instanceof Error) {
