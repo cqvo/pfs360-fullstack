@@ -1,9 +1,9 @@
-import { pgTable, serial, varchar, timestamp, foreignKey, unique, integer, text, jsonb } from "drizzle-orm/pg-core"
+import { pgMaterializedView, pgTable, pgView, serial, varchar, timestamp, unique, integer, text, jsonb } from "drizzle-orm/pg-core"
 import { relations } from "drizzle-orm/relations";
-import { sql } from "drizzle-orm"
+import { sql, eq, lt, gte, ne } from "drizzle-orm"
 import { json } from "@sveltejs/kit";
 
-
+// Table definitions
 export const dimItems = pgTable("dim_items", {
 	id: serial("id").primaryKey(),
 	plaidItemId: varchar("plaid_item_id").unique().notNull(),
@@ -96,6 +96,7 @@ export const factReportRequests = pgTable("fact_report_requests", {
 	data: jsonb("data"),
 });
 
+// Relation definitions
 export const dimClientsRelations = relations(dimClients, ({many}) => ({
 	dimItems: many(dimItems),
 	factLinkRequests: many(factLinkRequests),
@@ -104,14 +105,37 @@ export const dimClientsRelations = relations(dimClients, ({many}) => ({
 }));
 
 export const dimItemsRelations = relations(dimItems, ({one, many}) => ({
-	dimClient: one(dimClients, {
+	dimClients: one(dimClients, {
 		fields: [dimItems.clientId],
 		references: [dimClients.id]
 	}),
-	dimAccounts: many(dimAccounts),
-	dimInstitution: one(dimInstitutions, {
+	dimInstitutions: one(dimInstitutions, {
 		fields: [dimItems.institutionId],
 		references: [dimInstitutions.id]
 	}),
+	dimAccounts: many(dimAccounts), 
 	factPlaidApiEvents: many(factPlaidApiEvents),
+	factPlaidWebhookEvents: many(factPlaidWebhookEvents),
 }));
+
+export const dimAccountsRelations = relations(dimAccounts, ({one}) => ({
+	dimItems: one(dimItems, {
+		fields: [dimAccounts.itemId],
+		references: [dimItems.id]
+	})
+}));
+
+// View definitions
+// export const Accounts = pgView("vw_accounts").as((qb) => 
+// 	qb.select({
+// 		accountId: dimAccounts.id,
+// 		clientId: dimItems.clientId,
+// 		accountName: dimAccounts.name,
+// 		accountType: dimAccounts.type,
+// 		accountSubtype: dimAccounts.subtype,
+// 		institutionName: dimInstitutions.name,
+// 	})
+// 	.from(dimAccounts)
+// 	.leftJoin(dimItems, eq(dimAccounts.itemId, dimItems.id))
+// 	.leftJoin(dimInstitutions, eq(dimItems.institutionId, dimInstitutions.id))
+// );

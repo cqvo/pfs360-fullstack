@@ -1,4 +1,4 @@
-import { db } from '$lib/server/database';
+import db from '$lib/server/database';
 import { dimClients } from '$lib/server/database/schema';
 import { parse } from "csv-parse/sync";
 import { retrieveClientsItems } from '$lib/server/database/queries/clients';
