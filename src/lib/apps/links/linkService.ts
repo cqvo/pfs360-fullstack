@@ -1,7 +1,8 @@
 import { retrieveClientById } from '$lib/server/database/queries/clients';
 import plaid from '$lib/server/plaid';
 
-import { PLAID_CLIENT_NAME, PLAID_EMAIL, PLAID_WEBHOOK_URL } from '$env/static/private';
+import { PLAID_CLIENT_NAME, PLAID_EMAIL } from '$env/static/private';
+import { PLAID_WEBHOOK_URL } from '$env/dynamic/private';
 
 const linkService = {
     constructLinkCreateRequest: async (clientId: number) => {
