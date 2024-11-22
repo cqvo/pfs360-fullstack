@@ -1,4 +1,3 @@
-import { env } from '$env/dynamic/private';
 import type { LinkRequest, ItemAddResultRequest } from '$lib/apps/links/linkTypes';
 import service from '$lib/apps/links/linkService';
 import model from '$lib/apps/links/linkModel';
