@@ -3,12 +3,6 @@
 </script>
 
 <div>
-	<!-- <FileUpload name="uploadClients" accept="text/csv" onFileChange={console.log} maxFiles={1}>
-		<button class="btn preset-filled">
-			<IconUpload class="size-4" />
-			<span>Select File</span>
-		</button>
-	</FileUpload> -->
 	<form method="post" use:enhance enctype="multipart/form-data">
 		<div class="group">
 		  <label for="file">Upload your file</label>

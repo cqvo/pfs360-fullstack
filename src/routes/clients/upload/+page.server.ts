@@ -22,8 +22,8 @@ export const actions = {
     console.log('File to upload:', fileToUpload);
 
     const content = await fileToUpload.text(); // Read file content
-    const records = parse(content, { columns: ['taxdomeId', 'companyName', 'emailAddress'] }); // Parse CSV into JSON
-    records.forEach((record: Record<string, any>) => {
+    const records: Array<{ taxdomeId: string, companyName: string, emailAddress: string}> = parse(content, { columns: ['taxdomeId', 'companyName', 'emailAddress'] }); // Parse CSV into JSON
+    records.forEach((record: Record<string, string>) => {
         upsertClient(record);
     });
   } catch (error) {

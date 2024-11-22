@@ -19,10 +19,11 @@ interface Client {
  * 
  * @param client 
  */
-export const upsertClient = async (client: Client) => {
-    await db.insert(dimClients)
-    .values(client)
-    .onConflictDoUpdate({ target: dimClients.taxdomeId, set: client });
+export const upsertClient = async (client: Record<string, string>) => {
+	await db
+		.insert(dimClients)
+		.values(client)
+		.onConflictDoUpdate({ target: dimClients.taxdomeId, set: client });
 };
 
 /**
