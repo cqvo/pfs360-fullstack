@@ -11,6 +11,8 @@ export const dimItems = pgTable("dim_items", {
 	clientId: integer("client_id").notNull().references(() => dimClients.id),
 	institutionId: integer("institution_id").notNull().references(() => dimInstitutions.id),
 	status: varchar("status").notNull(),
+	keyDate: varchar("key_date"),
+	keyIv: varchar("key_iv"),
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
 	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
 });
@@ -48,7 +50,7 @@ export const factLinkRequests = pgTable("fact_link_requests", {
 	linkToken: varchar("link_token").unique().notNull(),
 	clientId: integer("client_id").notNull().references(() => dimClients.id),
 	requestId: varchar("request_id").unique().notNull(),
-	status: varchar("request_status_id"),
+	status: varchar("request_status_id").default('Pending').notNull(),
 	linkSessionId: varchar("link_session_id"),
 	errorType: varchar("error_type"),
 	errorCode: varchar("error_code"),
