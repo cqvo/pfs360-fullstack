@@ -1,8 +1,5 @@
 import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid';
-
-const NODE_ENV = Deno.env.get('NODE_ENV') || 'development';
-const PLAID_CLIENT_ID = Deno.env.get('PLAID_CLIENT_ID');
-const PLAID_SECRET = Deno.env.get('PLAID_SECRET');
+import { NODE_ENV, PLAID_CLIENT_ID, PLAID_SECRET } from '$env/static/private';
 
 const configuration = new Configuration({
 	basePath: NODE_ENV !== 'production' ? PlaidEnvironments.sandbox : PlaidEnvironments.production,

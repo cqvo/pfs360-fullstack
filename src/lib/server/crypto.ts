@@ -1,46 +1,22 @@
 import type { Cipher, CipherKey } from 'node:crypto';
 import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
+import { ENCRYPTION_KEY } from '$env/static/private';
 
 const algorithm: string = 'aes-256-cbc';
-
-const yearMonth = (date: Date) => {
-	const year: number = date.getFullYear();
-	const month: string = String(date.getMonth() + 1).padStart(2, '0');
-	const yyyyMM: string = `${year}${month}`;
-	return yyyyMM;
-}
-
-const findOrCreateKey = async (yyyyMM: string) => {
-	// @ts-ignore
-	const kv = await Deno.openKv();
-	const result = await kv.get(['encryptionKeys', yyyyMM]);
-	if (!result.value) {
-		const key: CipherKey = randomBytes(32);
-		// @ts-ignore
-		await kv.set(['encryptionKeys', yyyyMM], key.toString('hex'));
-		return key as Buffer;
-	} else {
-		const result = await kv.get(['encryptionKeys', yyyyMM]);
-		return Buffer.from(result.value as string, 'hex');
-	}
-};
+const key = Buffer.from(ENCRYPTION_KEY, 'hex');
 
 export const encrypt = async (plaintext: string) => {
-	// Get year and month in yyyyMM format
-	const keyDate: string = yearMonth(new Date());
-	// Find or create encryption key 'mmmmYY'
-	const key: Buffer = await findOrCreateKey(keyDate);
+	// Use key and random IV to create cipher, then encrypt plaintext
 	const iv: Buffer = randomBytes(16);
-	// Use key and IV to create cipher, then encrypt plaintext
 	const cipher: Cipher = createCipheriv(algorithm, key, iv);
 	let encrypted: string = cipher.update(plaintext, 'utf8', 'hex');
 	encrypted += cipher.final('hex');
 	// Return encrypted string and IV as array
-	return { ciphertext: encrypted, keyDate: keyDate, ivHexString: iv.toString('hex') };
+	return [ encrypted, iv.toString('hex') ];
 };
 
-export const decrypt = async (ciphertext: string, keyDate: string, ivHexString: string) => {
-	const key: Buffer = await findOrCreateKey(keyDate);
+export const decrypt = async (ciphertext: string, ivHexString: string) => {
+	// const key: Buffer = await findOrCreateKey(keyDate);
 	const iv: Buffer = Buffer.from(ivHexString, 'hex');
 	const decipher = createDecipheriv(algorithm, key, iv);
 	let plaintext = decipher.update(ciphertext, 'hex', 'utf8');

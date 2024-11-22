@@ -31,7 +31,7 @@ const linkModel = {
     },
     upsertItem: async (item) => {
         try {
-            const encrypted = await encrypt(item['access_token']);
+            const [encrypted, iv] = await encrypt(item['access_token']);
             await db
                 .insert(dimItems)
                 .values({
@@ -39,15 +39,13 @@ const linkModel = {
                     clientId: item.clientId,
                     institutionId: item.institutionId,
                     status: 'Active',
-                    accessToken: encrypted.ciphertext,
-                    keyDate: encrypted.keyDate,
-                    keyIv: encrypted.ivHexString,
+                    accessToken: encrypted,
+                    keyIv: iv,
                 })
                 .onConflictDoUpdate({ target: dimItems.plaidItemId, set: {
                     status: 'Active',
-                    accessToken: encrypted.ciphertext,
-                    keyDate: encrypted.keyDate,
-                    keyIv: encrypted.ivHexString,
+                    accessToken: encrypted,
+                    keyIv: iv,
                 }});
         } catch (error) {
             throw new Error(error instanceof Error ? error.message : String(error));
