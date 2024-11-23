@@ -1,12 +1,15 @@
 import { parse } from "csv-parse/sync";
-import { retrieveClientsItems } from '$lib/server/database/queries/clients';
+import clientController from '$lib/apps/clients/controller';
 
 export const POST = async ({ request }) => {
     try {
         const formData = await request.formData();
         const file = formData.get("file");
+        if (!file) {
+            return new Response("No file found in request", { status: 400 });
+        }
 
-        if (!file || file.type !== "text/csv") {
+        if (!(file instanceof File) || file.type !== "text/csv") {
             return new Response("Invalid file type. Only CSV files are allowed.", {
                 status: 400,
             });
@@ -29,7 +32,7 @@ export const POST = async ({ request }) => {
 
 export const GET = async() => {
     try {
-        const clients = await retrieveClientsItems();
+        const clients = await clientController.retrieveItems();
         return new Response(JSON.stringify(clients), {
             headers: {
                 'Content-Type': 'application/json'

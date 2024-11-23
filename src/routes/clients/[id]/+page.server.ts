@@ -1,12 +1,11 @@
 import type { Actions, PageServerLoad } from './$types';
 import linkController from '$lib/apps/links/linkController';
-import { retrieveClientById } from '$lib/server/database/queries/clients';
-import { retrieveItemsAccountsByClientId } from '$lib/server/database/queries/items';
+import clientController from '$lib/apps/clients/controller';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const clientId = Number(params.id);
-	const items = await retrieveItemsAccountsByClientId(clientId);
-	const client = await retrieveClientById(clientId)
+	const items = await clientController.retrieveItemsByClientId(clientId);
+	const client = await clientController.retrieveClientById(clientId)
 	return {
 		items, client
 	};

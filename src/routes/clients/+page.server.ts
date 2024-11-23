@@ -1,8 +1,8 @@
 import type { PageServerLoad } from './$types';
-import { retrieveClientsItems } from '$lib/server/database/queries/clients';
+import clientController from '$lib/apps/clients/controller';
 
 export const load: PageServerLoad = async () => {
-	const clients = await retrieveClientsItems();
+	const clients = await clientController.retrieveItems();
 	return {
 		clients
 	};
