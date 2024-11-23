@@ -1,6 +1,6 @@
 import linkController from '$lib/apps/links/linkController';
 
-const webhookController = async (request: Record<any,any>) => {
+const webhookController = async (request: Request) => {
     const payload = await request.json();
     const type = payload['webhook_type'];
     const code = payload['webhook_code'];

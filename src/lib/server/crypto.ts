@@ -1,6 +1,6 @@
 import type { Cipher, CipherKey } from 'node:crypto';
 import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
-import { ENCRYPTION_KEY } from '$env/static/private';
+import { ENCRYPTION_KEY } from '$lib/config';
 
 const algorithm: string = 'aes-256-cbc';
 const key: CipherKey = Buffer.from(ENCRYPTION_KEY, 'hex');

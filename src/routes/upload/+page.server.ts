@@ -1,7 +1,7 @@
 import type { Actions } from './$types';
 import { parse } from 'csv-parse/sync';
 import { fail, type AwaitedActions } from '@sveltejs/kit';
-import { upsertClient } from '$lib/server/database/queries/clients';
+import clientController from '$lib/apps/clients/controller';
 
 export const actions = {
   default: async ({ request }: { request: Request }) => {
