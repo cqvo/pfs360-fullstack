@@ -8,12 +8,9 @@ import {
     VERCEL_ENV as _VERCEL_ENV,
     VERCEL_PROJECT_PRODUCTION_URL as _VERCEL_PROJECT_PRODUCTION_URL,
     VERCEL_URL as _VERCEL_URL,
-
-    LOCAL_DB,
-    LOCAL_DB_URL,
 } from '$env/static/private';
 
-export const DATABASE_URL = LOCAL_DB ? LOCAL_DB_URL : _DATABASE_URL;
+export const DATABASE_URL = _DATABASE_URL;
 
 export const ENCRYPTION_KEY = _ENCRYPTION_KEY;
 
