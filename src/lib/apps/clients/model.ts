@@ -1,7 +1,9 @@
-import db from '$lib/server/database';
+import { getDb } from '$lib/server/database';
 import { dimClients, dimItems } from '$lib/server/database/schema';
 import { sql, eq, lt, gte, ne } from 'drizzle-orm';
 import logger from '$lib/logger';
+
+const db = getDb();
 
 const clientModel = {
     retrieveClients: async () => {
