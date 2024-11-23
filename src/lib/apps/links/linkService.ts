@@ -1,26 +1,23 @@
-import { retrieveClientById } from '$lib/server/database/queries/clients';
+import { PLAID_CLIENT_NAME, PLAID_EMAIL, WEBHOOK_URL } from '$lib/config';
+import model from '$lib/apps/links/linkModel';
 import plaid from '$lib/server/plaid';
-import { PLAID_CLIENT_NAME, PLAID_EMAIL, VERCEL_ENV, VERCEL_PROJECT_PRODUCTION_URL, VERCEL_URL } from '$env/static/private';
-
-const webhookRoute = '/api/v1/webhook';
-const baseUrl = VERCEL_ENV === 'production' ? VERCEL_PROJECT_PRODUCTION_URL : VERCEL_URL;
-const WEBHOOK_URL = `https://${baseUrl}${webhookRoute}`;
+import { CountryCode, HostedLinkDeliveryMethod, Products } from 'plaid';
 
 const linkService = {
     constructLinkCreateRequest: async (clientId: number) => {
         try {
-            const client = await retrieveClientById(clientId);
+            const client = await model.retrieveClientById(clientId);
             const request = {
-                user: {
-                    client_user_id: client.taxdomeId,
-                    email_address: PLAID_EMAIL || 'cqvo@proton.me',
+                'user': {
+                    'client_user_id': client.taxdomeId,
+                    'email_address': PLAID_EMAIL || 'cqvo@proton.me',
                 },
-                client_name: PLAID_CLIENT_NAME || 'PFS 360',
-                products: ['assets'],
-                country_codes: ['US'],
-                language: 'en',
-                webhook: WEBHOOK_URL,
-                hosted_link: { delivery_method: 'email' }
+                'client_name': PLAID_CLIENT_NAME || 'PFS 360',
+                'products': [Products.Assets],
+                'country_codes': [CountryCode.Us],
+                'language': 'en',
+                'webhook': WEBHOOK_URL,
+                'hosted_link': { 'delivery_method': HostedLinkDeliveryMethod.Email }
             };
             return request;
         } catch (error) {
@@ -31,10 +28,14 @@ const linkService = {
         try {
             const request = {
                 'institution_id': plaidInstitutionId,
-                'country_codes': ['US'],
+                'country_codes': [CountryCode.Us],
             };
             const response = await plaid.institutionsGetById(request);
-            const institution = response.data.institution;
+            const data = response.data.institution;
+            const institution = {
+                'plaidInstitutionId': data['institution_id'],
+                'name': data['name'],
+            };
             return institution;
         } catch (error) {
             throw new Error(error instanceof Error ? error.message : String(error));

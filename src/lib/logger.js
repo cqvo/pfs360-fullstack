@@ -1,5 +1,5 @@
 import winston from 'winston';
-import { VERCEL_ENV } from '$env/static/private';
+import { VERCEL_ENV } from '$lib/config';
 
 const enumerateErrorFormat = winston.format((info) => {
 	if (info instanceof Error) {

@@ -1,19 +1,14 @@
-export interface newLinkRequest {
-    linkToken: string;
-    requestId: string;
-    clientId: number;
-    expiration: Date;
-}
 
-export interface LinkRequest extends newLinkRequest {
-  id: number;
-  linkSessionId: string;
-  errorType: string;
-  errorCode: string;
-  status: string;
-  createdAt: Date;
-  updatedAt: Date;    
-}
+
+// export interface LinkRequest extends newLinkRequest {
+//   id: number;
+//   linkSessionId: string;
+//   errorType: string;
+//   errorCode: string;
+//   status: string;
+//   createdAt: Date;
+//   updatedAt: Date;    
+// }
 
 interface BaseWebhookRequest {
     webhook_type: string;

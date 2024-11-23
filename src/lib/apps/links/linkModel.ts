@@ -1,11 +1,34 @@
 import db from '$lib/server/database';
-import { dimInstitutions, dimItems, factLinkRequests } from '$lib/server/database/schema';
+import { dimInstitutions, dimItems, factLinkRequests, dimClients } from '$lib/server/database/schema';
 import { sql, eq, lt, gte, ne } from 'drizzle-orm';
 import { encrypt, decrypt } from '$lib/server/crypto';
-import type { newLinkRequest, ItemAddResultRequest } from '$lib/apps/links/linkTypes';
+
+interface InstitutionUpsert {
+    plaidInstitutionId: string;
+    name: string;
+}
+interface NewLinkInsertion {
+    linkToken: string;
+    requestId: string;
+    clientId: number;
+    expiration: Date;
+}
 
 const linkModel = {
-    insertNewLinkRequest: async (linkRequest: newLinkRequest) => {
+    retrieveClientById: async (clientId: number) => {
+        try {
+            const client = await db.query.dimClients.findFirst({
+                where: eq(dimClients.id, clientId),
+            });
+            if (!client) {
+                throw new Error(`Client with id ${clientId} not found`);
+            }
+            return client;
+        } catch (error) {
+            throw new Error(error instanceof Error ? error.message : String(error));
+        }
+    },
+    insertNewLinkRequest: async (linkRequest: NewLinkInsertion) => {
         try {
             const link = await db
                 .insert(factLinkRequests)
@@ -20,7 +43,7 @@ const linkModel = {
         }
         
     },
-    upsertInstitution: async (institution) => {
+    upsertInstitution: async (institution: InstitutionUpsert) => {
         try {
             await db
                 .insert(dimInstitutions)
