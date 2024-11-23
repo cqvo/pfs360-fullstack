@@ -6,7 +6,7 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<h1 class="h1">{data.items[0].dimClients.companyName}</h1>
+<h1 class="h1">{data.client.companyName}</h1>
 <div class="">
 	<form method="post" action="?/createLink">
 		<button type="submit" class="btn preset-tonal-primary">Link New Bank</button>

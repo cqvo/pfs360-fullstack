@@ -4,8 +4,8 @@ import clientController from '$lib/apps/clients/controller';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const clientId = Number(params.id);
+	const client = await clientController.retrieveClientById(clientId);
 	const items = await clientController.retrieveItemsByClientId(clientId);
-	const client = await clientController.retrieveClientById(clientId)
 	return {
 		items, client
 	};

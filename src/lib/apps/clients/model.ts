@@ -32,7 +32,9 @@ const clientModel = {
     },
     retrieveItems: async () => {
         try {
-            const result = await db.query.dimItems.findMany();
+            const result = await db.query.dimClients.findMany({
+                with: { dimItems: true },
+            });
             if (!result) {
                 throw new Error('No rows returned from retrieveItems');
             }
@@ -46,6 +48,10 @@ const clientModel = {
         try {
             const result = await db.query.dimItems.findMany({
                 where: eq(dimItems.clientId, clientId),
+                with: { 
+                    dimInstitutions: true,
+                    dimAccounts: true,
+                },
             });
             if (!result) {
                 throw new Error(`No rows returned from retrieveItemsByClientId: ${clientId}`);
