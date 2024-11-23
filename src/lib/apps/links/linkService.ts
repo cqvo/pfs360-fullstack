@@ -1,6 +1,7 @@
 import { PLAID_CLIENT_NAME, PLAID_EMAIL, WEBHOOK_URL } from '$lib/config';
 import model from '$lib/apps/links/linkModel';
 import plaid from '$lib/server/plaid';
+import logger from '$lib/logger';
 import { CountryCode, HostedLinkDeliveryMethod, Products } from 'plaid';
 
 const linkService = {
@@ -21,7 +22,8 @@ const linkService = {
             };
             return request;
         } catch (error) {
-            throw new Error(error instanceof Error ? error.message : String(error));
+            logger.error(error);
+            throw new Error(`Failed to construct link request: ${error instanceof Error ? error.message : String(error)}`);
         }
     },
     getInstitutionFromItem: async (plaidInstitutionId: string) => {
@@ -31,6 +33,9 @@ const linkService = {
                 'country_codes': [CountryCode.Us],
             };
             const response = await plaid.institutionsGetById(request);
+            if (!response) {
+                throw new Error('plaid.institutionsGetById response is undefined or null');
+            }
             const data = response.data.institution;
             const institution = {
                 'plaidInstitutionId': data['institution_id'],
@@ -38,7 +43,8 @@ const linkService = {
             };
             return institution;
         } catch (error) {
-            throw new Error(error instanceof Error ? error.message : String(error));
+            logger.error(error);
+            throw new Error(`Failed to get institution from item: ${error instanceof Error ? error.message : String(error)}`);
         }
     },
 };

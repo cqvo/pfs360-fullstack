@@ -1,5 +1,5 @@
 import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid';
-import { VERCEL_ENV, PLAID_CLIENT_ID, PLAID_SECRET } from '$env/static/private';
+import { VERCEL_ENV, PLAID_CLIENT_ID, PLAID_SECRET } from '$lib/config';
 
 const configuration = new Configuration({
 	basePath: VERCEL_ENV !== 'production' ? PlaidEnvironments.sandbox : PlaidEnvironments.production,

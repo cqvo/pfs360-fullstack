@@ -9,7 +9,9 @@ const linkController = {
         try {
             const request = await service.constructLinkCreateRequest(clientId);
             const response = await plaid.linkTokenCreate(request);
-
+            if (!response) {
+                throw new Error('plaid.linkTokenCreate response is undefined or null');
+            }
             const linkRequest = {
                 'clientId': clientId,
                 'linkToken': response.data['link_token'],
@@ -21,6 +23,7 @@ const linkController = {
             return link;
         } catch (error) {
             logger.error(error);
+            throw new Error('Failed to create a new link request');
         }
     },
     itemAddResult: async (payload: ItemAddResultRequest) => {
@@ -40,14 +43,14 @@ const linkController = {
             const institution = await service.getInstitutionFromItem(plaidInstitutionId);
             await model.upsertInstitution(institution);
 
-            const itemPayload = {
+            const itemUpsertRequest = {
                 'accessToken': accessToken, // tokenResponse.data['access_token']
                 'plaidItemId': plaidItemId, // tokenResponse.data['item_id']
                 'clientId': link.clientId,
-                'institutionId': plaidInstitutionId, // itemResponse.data.item['institution_id']
+                'institutionId': Number(plaidInstitutionId), // itemResponse.data.item['institution_id']
                 'status': 'Active',
             }
-            const item = await model.upsertItem(itemPayload);
+            const item = await model.upsertItem(itemUpsertRequest);
             return item;
         } catch (error) {
             logger.error(error);

@@ -8,10 +8,10 @@ export const dimItems = pgTable("dim_items", {
 	id: serial("id").primaryKey(),
 	plaidItemId: varchar("plaid_item_id").unique().notNull(),
 	accessToken: varchar("access_token").unique(),
+	accessTokenIv: varchar("access_token_iv"),
 	clientId: integer("client_id").notNull().references(() => dimClients.id),
 	institutionId: integer("institution_id").notNull().references(() => dimInstitutions.id),
 	status: varchar("status").notNull(),
-	keyIv: varchar("key_iv"),
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
 	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
 });

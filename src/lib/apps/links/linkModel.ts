@@ -2,85 +2,112 @@ import db from '$lib/server/database';
 import { dimInstitutions, dimItems, factLinkRequests, dimClients } from '$lib/server/database/schema';
 import { sql, eq, lt, gte, ne } from 'drizzle-orm';
 import { encrypt, decrypt } from '$lib/server/crypto';
+import logger from '$lib/logger';
 
-interface InstitutionUpsert {
+interface InstitutionUpsertRequest {
     plaidInstitutionId: string;
     name: string;
 }
-interface NewLinkInsertion {
+interface NewLinkInsertionRequest {
     linkToken: string;
     requestId: string;
     clientId: number;
     expiration: Date;
 }
+interface ItemUpsertRequest {
+    plaidItemId: string;
+    clientId: number;
+    institutionId: number;
+    accessToken: string;
+    status: string;
+}
 
 const linkModel = {
     retrieveClientById: async (clientId: number) => {
         try {
-            const client = await db.query.dimClients.findFirst({
+            const result = await db.query.dimClients.findFirst({
                 where: eq(dimClients.id, clientId),
             });
-            if (!client) {
-                throw new Error(`Client with id ${clientId} not found`);
+            if (!result) {
+                throw new Error(`No rows returned from retrieveClientById: ${clientId}`);
             }
-            return client;
+            return result;
         } catch (error) {
-            throw new Error(error instanceof Error ? error.message : String(error));
+            logger.error('Error retrieving client by ID:', error);
+            throw new Error(`Failed to retrieve client by ID: ${error instanceof Error ? error.message : String(error)}`);
         }
     },
-    insertNewLinkRequest: async (linkRequest: NewLinkInsertion) => {
+    insertNewLinkRequest: async (linkRequest: NewLinkInsertionRequest) => {
         try {
-            const link = await db
+            const result = await db
                 .insert(factLinkRequests)
                 .values({
                     ...linkRequest,
                     expiration: linkRequest.expiration.toISOString(),
                 })
                 .returning();
-            return link;
+            if (!result) {
+                throw new Error('No rows returned from insertNewLinkRequest');
+            }
+            return result;
         } catch (error) {
-            throw new Error(error instanceof Error ? error.message : String(error));
+            logger.error('Error inserting new link request:', error);
+            throw new Error(`Failed to insert new link request: ${error instanceof Error ? error.message : String(error)}`);
         }
         
     },
-    upsertInstitution: async (institution: InstitutionUpsert) => {
+    upsertInstitution: async (institution: InstitutionUpsertRequest) => {
         try {
-            await db
+            const result = await db
                 .insert(dimInstitutions)
                 .values({
-                    plaidInstitutionId: institution['institution_id'],
-                    name: institution['name'],
+                    plaidInstitutionId: institution.plaidInstitutionId,
+                    name: institution.name,
                 })
-                .onConflictDoUpdate({ target: dimInstitutions.plaidInstitutionId, set: { name: institution['name'] }});
+                .onConflictDoUpdate({ target: dimInstitutions.plaidInstitutionId, set: { name: institution.name }})
+                .returning();
+            if (!result) {
+                throw new Error(`No rows returned from upsertInstitution: ${institution.plaidInstitutionId}`);
+            }
         } catch (error) {
-            throw new Error(error instanceof Error ? error.message : String(error));
+            logger.error(error);
+            throw new Error(`Failed to upsert institution: ${error instanceof Error ? error.message : String(error)}`);
         }
     },
-    upsertItem: async (item) => {
+    upsertItem: async (item: ItemUpsertRequest) => {
         try {
-            const [encrypted, iv] = await encrypt(item['access_token']);
-            await db
+            const [encrypted, iv] = await encrypt(item.accessToken);
+            if (!encrypted || !iv) {
+                throw new Error('No ciphertext or IV returned from encrypt');
+            }
+            const result = await db
                 .insert(dimItems)
                 .values({
                     plaidItemId: item.plaidItemId,
+                    accessToken: encrypted,
+                    accessTokenIv: iv,
                     clientId: item.clientId,
                     institutionId: item.institutionId,
                     status: 'Active',
-                    accessToken: encrypted,
-                    keyIv: iv,
                 })
                 .onConflictDoUpdate({ target: dimItems.plaidItemId, set: {
                     status: 'Active',
                     accessToken: encrypted,
                     keyIv: iv,
-                }});
+                }})
+                .returning();
+            if (!result) {
+                throw new Error(`No rows returned from upsertItem: ${item.plaidItemId}`);
+            }
+            return result;
         } catch (error) {
-            throw new Error(error instanceof Error ? error.message : String(error));
+            logger.error(error);
+            throw new Error(`Failed to upsert item: ${error instanceof Error ? error.message : String(error)}`);
         }
     },
     updateLinkRequest: async (linkToken: string) => {
         try {
-            const link = await db
+            const result = await db
                 .update(factLinkRequests)
                 .set({
                     status: 'Completed',
@@ -88,9 +115,13 @@ const linkModel = {
                 })
                 .where(eq(factLinkRequests.linkToken, linkToken))
                 .returning();
-            return link[0];
+            if (!result) {
+                throw new Error(`No rows returned from updateLinkRequest: ${linkToken}`);
+            }
+            return result[0];
         } catch (error) {
-            throw new Error(error instanceof Error ? error.message : String(error));
+            logger.error(error);
+            throw new Error(`Failed to update link request: ${error instanceof Error ? error.message : String(error)}`);
         }
     },
 };
