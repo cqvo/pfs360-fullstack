@@ -23,9 +23,9 @@ export const actions = {
 
     const content = await fileToUpload.text(); // Read file content
     const records: Array<{ taxdomeId: string, companyName: string, emailAddress: string}> = parse(content, { columns: ['taxdomeId', 'companyName', 'emailAddress'] }); // Parse CSV into JSON
-    // records.forEach((record: Record<string, string>) => {
-    //     clientController.upsertClient(record);
-    // });
+    records.forEach((record: Record<string, string>) => {
+        upsertClient(record);
+    });
   } catch (error) {
     console.error('Error processing file:', error);
     return fail(500, {

@@ -1,10 +1,8 @@
-import { getDb } from '$lib/server/database';
+import db from '$lib/server/database';
 import { dimInstitutions, dimItems, factLinkRequests, dimClients } from '$lib/server/database/schema';
 import { sql, eq, lt, gte, ne } from 'drizzle-orm';
 import { encrypt, decrypt } from '$lib/server/crypto';
 import logger from '$lib/logger';
-
-const db = getDb();
 
 interface InstitutionUpsertRequest {
     plaidInstitutionId: string;

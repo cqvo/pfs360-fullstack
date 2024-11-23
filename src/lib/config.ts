@@ -8,16 +8,27 @@ import {
     VERCEL_ENV as _VERCEL_ENV,
     VERCEL_PROJECT_PRODUCTION_URL as _VERCEL_PROJECT_PRODUCTION_URL,
     VERCEL_URL as _VERCEL_URL,
+
+    LOCAL_DB,
+    LOCAL_DB_URL,
 } from '$env/static/private';
 
-export const DATABASE_URL = _DATABASE_URL;
+export const DATABASE_URL = LOCAL_DB ? LOCAL_DB_URL : _DATABASE_URL;
+
 export const ENCRYPTION_KEY = _ENCRYPTION_KEY;
+
 export const PLAID_CLIENT_ID = _PLAID_CLIENT_ID;
+
 export const PLAID_CLIENT_NAME = _PLAID_CLIENT_NAME || 'PFS 360';
+
 export const PLAID_EMAIL = _PLAID_EMAIL;
+
 export const PLAID_SECRET = _PLAID_SECRET;
+
 export const VERCEL_ENV = _VERCEL_ENV || 'development';
+
 export const VERCEL_PROJECT_PRODUCTION_URL = _VERCEL_PROJECT_PRODUCTION_URL;
+
 export const VERCEL_URL = _VERCEL_URL;
 
 const webhookRoute = '/api/v1/webhook';
