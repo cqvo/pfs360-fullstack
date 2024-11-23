@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import linkController from './linkController';
-import service from '$lib/apps/links/linkService';
+import service, { constructLinkCreateRequest } from '$lib/apps/links/linkService';
 import model from '$lib/apps/links/linkModel';
 import plaid from '$lib/server/plaid';
 import logger from '$lib/logger';

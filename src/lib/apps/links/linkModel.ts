@@ -93,7 +93,7 @@ const linkModel = {
                 .onConflictDoUpdate({ target: dimItems.plaidItemId, set: {
                     status: 'Active',
                     accessToken: encrypted,
-                    keyIv: iv,
+                    accessTokenIv: iv,
                 }})
                 .returning();
             if (!result) {
