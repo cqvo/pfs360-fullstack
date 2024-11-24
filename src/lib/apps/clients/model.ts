@@ -3,7 +3,46 @@ import { dimClients, dimItems } from '$lib/server/database/schema';
 import { sql, eq, lt, gte, ne } from 'drizzle-orm';
 import logger from '$lib/logger';
 
+interface ClientRecord {
+    taxdomeId: string;
+    companyName: string;
+    emailAddress: string;
+}
+
 const clientModel = {
+    upsertClient: async (record: ClientRecord) => {
+        try {
+            const result = await db.insert(dimClients)
+                .values(record)
+                .onConflictDoUpdate({
+                    target: [dimClients.taxdomeId],
+                    set: {
+                        companyName: record.companyName,
+                        emailAddress: record.emailAddress,
+                    },
+                });
+            if (!result) {
+                throw new Error(`No rows returned from upsertClient: ${record.taxdomeId}`);
+            }
+            return result;
+        } catch (error) {
+            logger.error('Error upserting client:', error);
+            throw new Error(`Failed to upsert client: ${error instanceof Error ? error.message : String(error)}`);
+        }
+        },
+    upsertClients: async (records: Array<ClientRecord>) => {
+        try {
+            const results = [];
+            for (const record of records) {
+                const result = await clientModel.upsertClient(record);
+                results.push(result);
+            }
+            return results;
+        } catch (error) {
+            logger.error('Error upserting clients:', error);
+            throw new Error(`Failed to upsert clients: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    },
     retrieveClients: async () => {
         try {
             const result = await db.query.dimClients.findMany();

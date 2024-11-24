@@ -12,7 +12,7 @@
 	<Navigation.Tile id="1" label="Clients" href="/clients" width="w-24">
 		<Users />
 	</Navigation.Tile>
-	<Navigation.Tile id="2" label="Upload" href="/clients/upload" width="w-24">
+	<Navigation.Tile id="2" label="Upload" href="/upload" width="w-24">
 		<CloudUpload />
 	</Navigation.Tile>
 	<Navigation.Tile id="3" label="Reports" href="/reports" width="w-24">
