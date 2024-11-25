@@ -3,8 +3,8 @@
 	import { Segment } from '@skeletonlabs/skeleton-svelte';
 	import ItemStatus from '$lib/components/ItemStatus.svelte';
 
-	let clientList = $state('linked');
 	let { data }: { data: PageData } = $props();
+	let clientList = $state('linked');
 </script>
 
 <div class="flex justify-center">

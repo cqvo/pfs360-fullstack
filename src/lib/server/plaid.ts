@@ -11,6 +11,10 @@ const configuration = new Configuration({
 	},
 });
 
+console.log('Plaid ID:', PLAID_CLIENT_ID);
+console.log('Plaid env:', VERCEL_ENV !== 'production' ? PlaidEnvironments.sandbox : PlaidEnvironments.production)
+console.log('Plaid Secret:', PLAID_SECRET);
+
 const plaid = new PlaidApi(configuration);
 
 export default plaid;

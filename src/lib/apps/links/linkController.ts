@@ -8,7 +8,9 @@ const linkController = {
     newLinkCreateRequest: async (clientId: number) => {
         try {
             const request = await service.constructLinkCreateRequest(clientId);
+            console.log('Constructed request payload:', request);
             const response = await plaid.linkTokenCreate(request);
+            console.log('Response:', response);
             if (!response) {
                 throw new Error('plaid.linkTokenCreate response is undefined or null');
             }
@@ -19,10 +21,11 @@ const linkController = {
                 'requestId': response.data['request_id'],
             };
             const link = await model.insertNewLinkRequest(linkRequest);
-
+            
             return link;
         } catch (error) {
             logger.error(error);
+            console.log('Error:', error);
             throw new Error('Failed to create a new link request');
         }
     },
