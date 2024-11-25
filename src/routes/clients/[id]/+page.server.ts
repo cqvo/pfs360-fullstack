@@ -14,6 +14,18 @@ export const load: PageServerLoad = async ({ params }) => {
 export const actions = {
 	createLink: async({ params }) => {
 		const clientId = Number(params.id);
-		linkController.newLinkCreateRequest(clientId);
+		try {
+			const linkRequest = linkController.newLinkCreateRequest(clientId);
+			return {
+				success: true,
+				linkToken: linkRequest.linkToken,
+			}
+		} catch (error) {
+			console.error('Error creating link token:', error);
+			return {
+				success: false,
+				error: 'Failed to create link token',
+			}
+		}
 	},
 } satisfies Actions;

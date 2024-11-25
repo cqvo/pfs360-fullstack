@@ -13,12 +13,17 @@ const linkService = {
                     'client_user_id': client.taxdomeId,
                     'email_address': PLAID_EMAIL || 'cqvo@proton.me',
                 },
-                'client_name': PLAID_CLIENT_NAME || 'PFS 360',
+                'client_name': PLAID_CLIENT_NAME || 'PFS360',
                 'products': [Products.Assets],
                 'country_codes': [CountryCode.Us],
                 'language': 'en',
                 'webhook': WEBHOOK_URL,
-                'hosted_link': { 'delivery_method': HostedLinkDeliveryMethod.Email }
+                // 'hosted_link': {
+                //     'delivery_method': HostedLinkDeliveryMethod.Email,
+                //     'url_lifetime_seconds': 600, // 10 minutes
+                //     'completion_redirect_uri': 'https://internal.pfs360.com',
+                //     'is_mobile_app': false,
+                // }
             };
             return request;
         } catch (error) {
