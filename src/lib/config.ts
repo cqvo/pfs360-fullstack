@@ -1,3 +1,4 @@
+import logger from '$lib/logger';
 import {
     DATABASE_URL as _DATABASE_URL,
     ENCRYPTION_KEY as _ENCRYPTION_KEY,
@@ -29,5 +30,6 @@ export const VERCEL_PROJECT_PRODUCTION_URL = _VERCEL_PROJECT_PRODUCTION_URL;
 export const VERCEL_URL = _VERCEL_URL;
 
 const webhookRoute = '/api/v1/webhook';
-const baseUrl = VERCEL_ENV === 'production' ? VERCEL_PROJECT_PRODUCTION_URL : VERCEL_URL;
+const baseUrl = VERCEL_ENV === 'production' ? VERCEL_PROJECT_PRODUCTION_URL : 'apt-distinctly-panda.ngrok-free.app';
 export const WEBHOOK_URL = `https://${baseUrl}${webhookRoute}`;
+logger.info(`Using webhook URL: ${WEBHOOK_URL}`);

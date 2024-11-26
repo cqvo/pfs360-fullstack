@@ -7,74 +7,84 @@
 	let clientList = $state('linked');
 </script>
 
-<div class="flex justify-center">
+<!-- <div class="flex justify-center">
 	<Segment name="clientList" bind:value={clientList}>
 		<Segment.Item value="linked">Linked</Segment.Item>
 		<Segment.Item value="unlinked">Unlinked</Segment.Item>
 	</Segment>
-</div>
+</div> -->
 
 <div class="table-wrap">
-	<table class="table">
-		{#if clientList === 'unlinked'}
-			<thead>
+<table class="table">
+	<thead>
+		<tr>
+			<th>Company</th>
+			<th>Link Status</th>
+		</tr>
+	</thead>
+	<tbody>
+		{#each data.clients as client}
+		{#each client.dimItems as item}
+			<tr>
+				<td><a href="/clients/{client.id}" class="anchor">{client.companyName}</a></td>
+				<td>
+					<ItemStatus status={item.status} />
+				</td>
+			</tr>
+			{/each}
+		{/each}
+	</tbody>
+</table>
+
+<!-- {#if clientList === 'unlinked'}
+<table class="table">
+	<thead>
+		<tr>
+			<th>Company</th>
+		</tr>
+	</thead>
+	<tbody>
+		{#each data.clients as client}
+			{#if client.dimItems.length === 0}
+			<tr>
+				<td>
+					<a href="/clients/{client.id}" class="anchor">{client.companyName}</a>
+				</td>
+			</tr>
+			{/if}
+		{/each}
+	</tbody>
+</table>
+
+{:else if clientList === 'linked'}
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Company</th>
+			<th>Link Status</th>
+			<th>Institution</th>
+			<th>Account</th>
+		</tr>
+	</thead>
+	<tbody>
+		{#each data.clients as client}
+		{#each client.dimItems as item}
+			<tr>
+				<td rowspan={item.dimAccounts.length}>{client.companyName}</td>
+				<td rowspan={item.dimAccounts.length}>{item.status}</td>
+				<td>{item.dimAccounts[0].name}</td>
+				<td>{item.dimAccounts[0].type}</td>
+			</tr>
+			{#each item.dimAccounts.slice(1) as account}
 				<tr>
-					<th>Company</th>
+					<td>{account.name}</td>
+					<td>{account.type}</td>
 				</tr>
-			</thead>
-			<tbody>
-				{#each data.clients as client}
-				{#if client.dimItems.length === 0}
-					<tr>
-						<td><a href="/clients/{client.id}" class="anchor">{client.companyName}</a></td>
-					</tr>
-					{/if}
-				{/each}
-			</tbody>
-		{:else if clientList === 'linked'}
-			<thead>
-				<tr>
-					<th>Company</th>
-					<th>Institution</th>
-					<th>Account</th>
-					<td>Link Status</td>
-				</tr>
-			</thead>
-			<tbody>
-				{#each data.clients as client}
-					{@const itemCount = client.dimItems.length}
-					{#if client.dimItems.length === 1}
-						{#each client.dimItems as item}
-							<tr>
-								<td><a href="/clients/{client.id}" class="anchor">{client.companyName}</a></td>
-								<td>Institution</td>
-								<td>Account</td>
-								<td><ItemStatus status={item.status} /></td>
-							</tr>
-						{/each}
-					{:else if client.dimItems.length > 1}
-						{#each client.dimItems as item, i}
-							{#if i === 0}
-								<tr>
-									<td rowspan={itemCount}
-										><a href="/clients/{client.id}" class="anchor">{client.companyName}</a></td
-									>
-									<td>Institution</td>
-									<td>Account</td>
-									<td><ItemStatus status={item.status} /></td>
-								</tr>
-							{:else}
-								<tr>
-									<td>Institution</td>
-									<td>Account</td>
-									<td><ItemStatus status={item.status} /></td></tr
-								>
-							{/if}
-						{/each}
-					{/if}
-				{/each}
-			</tbody>
-			<tfoot> </tfoot>
-		{/if}
-	</table>
+			{/each}
+		{/each}
+		{/each}
+	</tbody>
+</table>
+{/if} -->
 </div>

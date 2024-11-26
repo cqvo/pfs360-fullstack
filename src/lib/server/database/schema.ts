@@ -44,6 +44,15 @@ export const dimClients = pgTable("dim_clients", {
 	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
 });
 
+export const dimLinks = pgTable("dim_links", {
+	id: serial("id").primaryKey(),
+	clientId: integer("client_id").notNull().references(() => dimClients.id),
+	linkToken: varchar("link_token").unique().notNull(),
+	status: varchar("status").notNull().default('Active'),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
+});
+
 export const factLinkRequests = pgTable("fact_link_requests", {
 	id: serial("id").primaryKey(),
 	linkToken: varchar("link_token").unique().notNull(),
@@ -98,11 +107,22 @@ export const factReportRequests = pgTable("fact_report_requests", {
 });
 
 // Relation definitions
-export const dimClientsRelations = relations(dimClients, ({many}) => ({
+export const dimClientsRelations = relations(dimClients, ({one, many}) => ({
 	dimItems: many(dimItems),
+	dimLinks: one(dimLinks, {
+		fields: [dimClients.id],
+		references: [dimLinks.clientId]
+	}),
 	factLinkRequests: many(factLinkRequests),
 	factPlaidApiEvents: many(factPlaidApiEvents),
 	factReportRequests: many(factReportRequests),
+}));
+
+export const dimLinksRelations = relations(dimLinks, ({one}) => ({
+	dimClients: one(dimClients, {
+		fields: [dimLinks.clientId],
+		references: [dimClients.id]
+	})
 }));
 
 export const dimItemsRelations = relations(dimItems, ({one, many}) => ({
@@ -123,5 +143,12 @@ export const dimAccountsRelations = relations(dimAccounts, ({one}) => ({
 	dimItems: one(dimItems, {
 		fields: [dimAccounts.itemId],
 		references: [dimItems.id]
+	}),
+}));
+
+export const factLinkRequestsRelations = relations(factLinkRequests, ({one}) => ({
+	dimClients: one(dimClients, {
+		fields: [factLinkRequests.clientId],
+		references: [dimClients.id]
 	})
 }));

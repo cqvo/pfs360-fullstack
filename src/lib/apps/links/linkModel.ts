@@ -25,8 +25,21 @@ interface ItemUpsertRequest {
 const linkModel = {
     retrieveClientById: async (clientId: number) => {
         try {
+            await db
+                .update(factLinkRequests)
+                .set({
+                    status: 'Expired',
+                    updatedAt: (new Date()).toISOString(),
+                })
+                .where( lt(factLinkRequests.expiration, (new Date()).toISOString()) );
             const result = await db.query.dimClients.findFirst({
                 where: eq(dimClients.id, clientId),
+                with: {
+                    factLinkRequests: {
+                        where: (factLinkRequests, { eq }) => eq(factLinkRequests.status, 'Pending'),
+                    },
+                    dimLinks: true,
+                },
             });
             if (!result) {
                 throw new Error(`No rows returned from retrieveClientById: ${clientId}`);
@@ -35,6 +48,21 @@ const linkModel = {
         } catch (error) {
             logger.error('Error retrieving client by ID:', error);
             throw new Error(`Failed to retrieve client by ID: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    },
+    retrieveMostRecentLinkRequest: async (clientId: number) => {
+        try {
+            const result = await db.query.factLinkRequests.findFirst({
+                where: eq(factLinkRequests.clientId, clientId),
+                orderBy: (factLinkRequests, { desc }) => [desc(factLinkRequests.createdAt)],
+            });
+            if (!result) {
+                throw new Error(`No rows returned from retrieveMostRecentLinkRequest: ${clientId}`);
+            }
+            return result;
+        } catch (error) {
+            logger.error('Error retrieving most recent link request:', error);
+            throw new Error(`Failed to retrieve most recent link request: ${error instanceof Error ? error.message : String(error)}`);
         }
     },
     insertNewLinkRequest: async (linkRequest: NewLinkInsertionRequest) => {
@@ -49,7 +77,7 @@ const linkModel = {
             if (!result) {
                 throw new Error('No rows returned from insertNewLinkRequest');
             }
-            return result;
+            return result[0];
         } catch (error) {
             logger.error('Error inserting new link request:', error);
             throw new Error(`Failed to insert new link request: ${error instanceof Error ? error.message : String(error)}`);
@@ -66,6 +94,7 @@ const linkModel = {
                 })
                 .onConflictDoUpdate({ target: dimInstitutions.plaidInstitutionId, set: { name: institution.name }})
                 .returning();
+            return result[0];
             if (!result) {
                 throw new Error(`No rows returned from upsertInstitution: ${institution.plaidInstitutionId}`);
             }
@@ -111,6 +140,7 @@ const linkModel = {
                 .update(factLinkRequests)
                 .set({
                     status: 'Completed',
+                    completedAt: (new Date()).toISOString(),
                     updatedAt: (new Date()).toISOString(),
                 })
                 .where(eq(factLinkRequests.linkToken, linkToken))

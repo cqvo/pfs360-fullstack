@@ -2,7 +2,7 @@ import { PLAID_CLIENT_NAME, PLAID_EMAIL, WEBHOOK_URL } from '$lib/config';
 import model from '$lib/apps/links/linkModel';
 import plaid from '$lib/server/plaid';
 import logger from '$lib/logger';
-import { CountryCode, HostedLinkDeliveryMethod, Products } from 'plaid';
+import { CountryCode, Products } from 'plaid';
 
 const linkService = {
     constructLinkCreateRequest: async (clientId: number) => {

@@ -23,6 +23,14 @@ const clientController = {
         const items = await model.retrieveItemsByClientId(clientId);
         return items;
     },
+    retrieveAccounts: async () => {
+        const accounts = await model.retrieveAccounts();
+        return accounts;
+    },
+    retrieveAccountByAccountId: async (accountId: number) => {
+        const account = await model.retrieveAccountByAccountId(accountId);
+        return account;
+    }
 }
 
 export default clientController;
