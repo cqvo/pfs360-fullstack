@@ -29,6 +29,7 @@ const reportController = {
                 asset_report_token: report.reportToken,
             }
             const response = await plaid.assetReportGet(request);
+            const reports = await service.processReportGetResponse(response);
             const storedReport = await model.storeReport(report.id, response.data.report);
             return storedReport;
         } catch (error) {

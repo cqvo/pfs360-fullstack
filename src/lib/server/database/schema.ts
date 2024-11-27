@@ -53,6 +53,17 @@ export const dimLinks = pgTable("dim_links", {
 	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
 });
 
+export const dimReports = pgTable("dim_reports", {
+	id: serial("id").primaryKey(),
+	plaidRequestId: varchar("plaid_request_id").unique().notNull(),
+	accountId: integer("account_id").notNull().references(() => dimAccounts.id),
+	data: jsonb("data"),
+	reportDate: timestamp("report_date", { mode: 'string' }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
+	
+});
+
 export const factLinkRequests = pgTable("fact_link_requests", {
 	id: serial("id").primaryKey(),
 	linkToken: varchar("link_token").unique().notNull(),
