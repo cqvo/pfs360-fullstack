@@ -3,11 +3,11 @@
 </script>
 
 {#if status === 'Error'}
-<button type="button" class="chip preset-tonal-error">ERROR</button>
+<span type="button" class="chip preset-tonal-error">ERROR</span>
 {:else if status === 'Warning'}
-<button type="button" class="chip preset-tonal-warning">WARN</button>
+<span type="button" class="chip preset-tonal-warning">WARN</span>
 {:else if status === 'Active'}
-<button type="button" class="chip preset-tonal-success">OK</button>
+<span type="button" class="chip preset-tonal-success">OK</span>
 {:else}
-<button type="button" class="chip preset-tonal">UNK</button>
+<span type="button" class="chip preset-tonal">UNK</span>
 {/if}

@@ -43,6 +43,13 @@
       "when": 1732252903835,
       "tag": "0005_thankful_riptide",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1732567327348,
+      "tag": "0006_glossy_kitty_pryde",
+      "breakpoints": true
     }
   ]
 }

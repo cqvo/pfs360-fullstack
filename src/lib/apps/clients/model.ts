@@ -1,5 +1,5 @@
 import db from '$lib/server/database';
-import { dimClients, dimItems } from '$lib/server/database/schema';
+import { dimClients, dimItems, dimAccounts } from '$lib/server/database/schema';
 import { sql, eq, lt, gte, ne } from 'drizzle-orm';
 import logger from '$lib/logger';
 
@@ -100,7 +100,39 @@ const clientModel = {
             logger.error('Error retrieving items by client ID:', error);
             throw new Error(`Failed to retrieve items by client ID: ${error instanceof Error ? error.message : String(error)}`);
         }
-    }
+    },
+    retrieveAccounts: async () => {
+        try {
+            const result = await db.query.dimClients.findMany({
+                with: {
+                    dimItems: {
+                        with: { dimAccounts: true },
+                    }
+                },
+            });
+            if (!result) {
+                throw new Error(`No rows returned from retrieveAccounts`);
+            }
+            return result;
+        } catch (error) {
+            logger.error('Error retrieving accounts:', error);
+            throw new Error(`Failed to retrieve accounts: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    },
+    retrieveAccountByAccountId: async (accountId: number) => {
+        try {
+            const result = await db.query.dimAccounts.findFirst({
+                where: eq(dimAccounts.id, accountId),
+            });
+            if (!result) {
+                throw new Error(`No rows returned from retrieveAccountByAccountId: ${accountId}`);
+            }
+            return result;
+        } catch (error) {
+            logger.error('Error retrieving account by ID:', error);
+            throw new Error(`Failed to retrieve account by ID: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    },
 }
 
 export default clientModel;
