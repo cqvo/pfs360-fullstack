@@ -36,7 +36,15 @@ const reportController = {
             console.error(error);
             throw new Error('Failed to update report request');
         }
-    }
+    },
+    retrieveReportByItemId: async (itemId: number) => {
+        try {
+
+        } catch (error) {
+            console.error(error);
+            throw new Error('Failed to update report request');
+        }
+    },
 }
 
 export default reportController;

@@ -1,6 +1,6 @@
 import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';
-import clientController from '$lib/apps/clients/controller';
+import clientController from '$lib/apps/client/controller';
 
 export const actions = {
   default: async ({ request }: { request: Request }) => {

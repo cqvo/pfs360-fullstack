@@ -1,6 +1,7 @@
 import logger from '$lib/logger';
 import {
     DATABASE_URL as _DATABASE_URL,
+    MONGODB_URL as _MONGODB_URL,
     ENCRYPTION_KEY as _ENCRYPTION_KEY,
     PLAID_CLIENT_ID as _PLAID_CLIENT_ID,
     PLAID_CLIENT_NAME as _PLAID_CLIENT_NAME,
@@ -12,6 +13,8 @@ import {
 } from '$env/static/private';
 
 export const DATABASE_URL = _DATABASE_URL;
+
+export const MONGODB_URL = _MONGODB_URL;
 
 export const ENCRYPTION_KEY = _ENCRYPTION_KEY;
 
@@ -32,4 +35,4 @@ export const VERCEL_URL = _VERCEL_URL;
 const webhookRoute = '/api/v1/webhook';
 const baseUrl = VERCEL_ENV === 'production' ? VERCEL_PROJECT_PRODUCTION_URL : 'apt-distinctly-panda.ngrok-free.app';
 export const WEBHOOK_URL = `https://${baseUrl}${webhookRoute}`;
-logger.info(`Using webhook URL: ${WEBHOOK_URL}`);
+console.log(`Using webhook URL: ${WEBHOOK_URL}`);

@@ -11,8 +11,9 @@ export const encrypt = async (plaintext: string) => {
 	const cipher: Cipher = createCipheriv(algorithm, key, iv);
 	let encrypted: string = cipher.update(plaintext, 'utf8', 'hex');
 	encrypted += cipher.final('hex');
-	// Return encrypted string and IV as array
-	return [ encrypted, iv.toString('hex') ];
+	// Return encrypted string and IV as object
+	const ivHexString = iv.toString('hex');
+	return { encrypted, ivHexString };
 };
 
 export const decrypt = async (ciphertext: string, ivHexString: string) => {

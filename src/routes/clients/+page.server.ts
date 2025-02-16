@@ -1,9 +1,9 @@
 import type { PageServerLoad } from './$types';
-import clientController from '$lib/apps/clients/controller';
+import clientService from '$lib/apps/client/service';
 
 export const load: PageServerLoad = async () => {
-	const clients = await clientController.retrieveAccounts();
+	const clients = await clientService.getClients();
 	return {
-		clients
+		clients: clients.map(client => ({ ...client, id: client.id.toString() }))
 	};
 }
