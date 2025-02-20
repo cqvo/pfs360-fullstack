@@ -1,6 +1,5 @@
 import HistoricalBalance from '$lib/apps/client/class/HistoricalBalance';
 import { connectToDatabase } from '$lib/server/mongodb';
-import { ObjectId } from 'mongodb';
 
 export default class Account {
 	clientTaxdomeId: string;

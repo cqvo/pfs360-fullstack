@@ -1,5 +1,4 @@
 import type {
-	AssetReport,
 	AssetReportCreateRequest,
 	AssetReportCreateRequestOptions,
 	AssetReportGetRequest,
@@ -12,7 +11,6 @@ import { connectToDatabase } from '$lib/server/mongodb';
 import Item from '$lib/apps/client/class/Item';
 import Account from '$lib/apps/client/class/Account';
 import HistoricalBalance from '$lib/apps/client/class/HistoricalBalance';
-import { ObjectId } from 'mongodb';
 
 export default class Report {
 	reportToken: string;

@@ -1,9 +1,6 @@
 import type { Actions, PageServerLoad } from './$types';
 import clientService from '$lib/apps/client/service';
-import reportService from '$lib/apps/report/service';
 import Client from '$lib/apps/client/class/Client';
-import logger from '$lib/logger';
-import { error } from '@sveltejs/kit';
 
 let client: Client;
 let item: App.Item;

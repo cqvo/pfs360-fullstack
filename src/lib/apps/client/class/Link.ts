@@ -1,5 +1,5 @@
 import { connectToDatabase } from '$lib/server/mongodb';
-import type { LinkTokenCreateRequest, LinkTokenCreateResponse } from 'plaid';
+import type { LinkTokenCreateRequest } from 'plaid';
 import { CountryCode, Products } from 'plaid';
 import { PLAID_CLIENT_NAME, PLAID_EMAIL, WEBHOOK_URL } from '$lib/config';
 import plaid from '$lib/server/plaid';

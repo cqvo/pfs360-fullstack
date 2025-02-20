@@ -2,7 +2,6 @@
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
 	import { enhance } from '$app/forms';
-	import { page } from '$app/stores';
 	import { Accordion, Modal } from '@skeletonlabs/skeleton-svelte';
 	let { data }: { data: PageData } = $props();
 	let linkModalOpenState = $state(false);

@@ -1,7 +1,6 @@
 import { Client } from '$lib/apps/client/model';
 import model from '$lib/apps/report/model';
-import { encrypt, decrypt } from '$lib/server/crypto';
-import type { AssetReportCreateRequest } from 'plaid';
+import { decrypt } from '$lib/server/crypto';
 import plaid from '$lib/server/plaid';
 
 const reportService = {

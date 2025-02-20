@@ -1,5 +1,4 @@
 import Report from '$lib/apps/client/class/Report';
-import Account from '$lib/apps/client/class/Account';
 
 export const POST = async ({ request }) => {
     try {

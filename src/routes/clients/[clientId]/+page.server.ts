@@ -1,16 +1,10 @@
 import type { Actions, PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
-import clientModel from '$lib/apps/client/model';
-import reportService from '$lib/apps/report/service';
 import logger from '$lib/logger';
-// import { Client } from '$lib/apps/client/model';
 import Client from '$lib/apps/client/class/Client';
 import Link from '$lib/apps/client/class/Link';
 import Item from '$lib/apps/client/class/Item';
 import Report from '$lib/apps/client/class/Report';
-
-// let client: Client;
-// let link: Link | null;
 
 export const load: PageServerLoad = async ({ params }) => {
 	try {
