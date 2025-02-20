@@ -11,9 +11,7 @@ export const POST = async ({ request }) => {
             const report = await Report.findOne(body['asset_report_id']);
             await report.updateReport();
             const accounts = report.getAccounts();
-            for (const account of accounts) {
-                await account.upsertHistoricalBalances();
-            }
+            await Promise.all(accounts.map(account => account.upsertHistoricalBalances()));
             return new Response('Webhook received', { status: 200 });
         }
         return new Response('Webhook received but not handled', { status: 200 });
