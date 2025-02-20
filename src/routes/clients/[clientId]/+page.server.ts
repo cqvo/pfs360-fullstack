@@ -9,45 +9,45 @@ import Link from '$lib/apps/client/class/Link';
 import Item from '$lib/apps/client/class/Item';
 import Report from '$lib/apps/client/class/Report';
 
-let client: Client | null;
-let link: Link | null;
+// let client: Client;
+// let link: Link | null;
 
 export const load: PageServerLoad = async ({ params }) => {
 	try {
-		if (client == null) {
-			client =  await Client.findOne(params.clientId);
-		}
-		link = await client.findValidLink();
+		const client = await Client.findOne(params.clientId);
+		const link = await client.findValidLink();
 		return {
 			companyName: client.companyName,
 			items: client.items,
 			...(link ? { linkToken: link.linkToken } : {})
 		};
 	} catch (e) {
-		console.error('1Error in Controller [clientId]/+page.server.ts:', e);
-		throw error(500, '2Error in Controller [clientId]/+page.server.ts', e);
+		console.error('Error in PageServerLoad [clientId]/+page.server.ts:', e);
 	}
 };
 
 export const actions = {
-	newToken: async () => {
+	newToken: async ({ params }) => {
 		try {
+			const client = await Client.findOne(params.clientId);
 			const request = Link.constructCreateRequest(client);
-			link = await Link.createNewToken(request);
-			// await link.addToClient(client);
+			const link = await Link.createNewToken(request);
 			await client.addLink(link);
+			if (link) {
 			return {
 				success: true,
 				linkToken: link.linkToken
-			};
+			};}
 		} catch (e) {
 			logger.error('Error in [clientId]/+page.server.ts:', e);
 			throw error(500, 'Error in [clientId]/+page.server.ts');
 		}
 	},
-	onSuccess: async ({ request }) => {
+	onSuccess: async ({ request, params }) => {
 		try {
 			// await link!.removeFromClient(client);
+			const client = await Client.findOne(params.clientId);
+			const link = await client.findValidLink();
 			await client.removeLink(link);
 			const data = await request.formData();
 			const exchangeResponse = await Item.exchangePublicToken(data.get('publicToken'));
@@ -65,7 +65,8 @@ export const actions = {
 			throw error(500, `Error processing onSuccess: ${e}`);
 		}
 	},
-	requestData: async ({ request }) => {
+	requestData: async ({ request, params }) => {
+		const client = await Client.findOne(params.clientId);
 		const data = await request.formData();
 		const itemIndex = data.get('itemIndex');
 		const itemData = client.items[itemIndex];

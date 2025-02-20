@@ -1,9 +1,10 @@
 import type { PageServerLoad } from './$types';
-import clientService from '$lib/apps/client/service';
-
+// import clientService from '$lib/apps/client/service';
+import Client from '$lib/apps/client/class/Client';
 export const load: PageServerLoad = async () => {
-	const clients = await clientService.getClients();
+	const results = await Client.findAll();
+	const clients = results.map(result => result.pojo());
 	return {
-		clients: clients.map(client => ({ ...client, id: client.id.toString() }))
+		clients
 	};
 }

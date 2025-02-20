@@ -124,6 +124,7 @@ export default class Report {
 				));
 			}
 			accounts.push(new Account(
+				account['client_user_id'],
 				account['account_id'],
 				historicalBalances,
 				account['mask'],

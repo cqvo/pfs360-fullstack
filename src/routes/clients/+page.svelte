@@ -14,7 +14,7 @@
 	<tbody>
 		{#each data.clients as client}
 			<tr>
-				<td><a href="/clients/{client.id}" class="anchor">{client.companyName}</a></td>
+				<td><a href="/clients/{client.clientId}" class="anchor">{client.companyName}</a></td>
 			</tr>
 		{/each}
 	</tbody>

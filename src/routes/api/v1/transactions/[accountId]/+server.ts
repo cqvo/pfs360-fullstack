@@ -17,10 +17,12 @@ export const GET: RequestHandler = async ({ params }) => {
 
 	// If dates are stored as Date objects in MongoDB they may be returned as strings;
 	// we format them consistently.
-	for (const entry of account.historical_balances) {
+	for (const entry of account.transactions) {
 		const date = new Date(entry.date).toISOString();
-		const balance = entry.current;
-		rows.push(`${date},${balance}`);
+		const amount = entry.amount;
+		const description = entry.original_description;
+		const pending = entry.pending;
+		rows.push(`${date},${amount},${description},${pending}`);
 	}
 
 	const csvContent = rows.join('\n');
@@ -28,7 +30,7 @@ export const GET: RequestHandler = async ({ params }) => {
 	return new Response(csvContent, {
 		headers: {
 			'Content-Type': 'text/csv',
-			'Content-Disposition': `attachment; filename="${account.officialName}_${account.mask}_dailybalance.csv"`
+			'Content-Disposition': `attachment; filename="${account.officialName}_${account.mask}_transactions.csv"`
 		}
 	});
 

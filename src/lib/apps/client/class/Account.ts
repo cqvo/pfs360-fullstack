@@ -3,12 +3,14 @@ import { connectToDatabase } from '$lib/server/mongodb';
 import { ObjectId } from 'mongodb';
 
 export default class Account {
+	clientTaxdomeId: string;
 	accountId: string;
 	historicalBalances: HistoricalBalance[];
 	mask: string;
 	officialName: string;
 
-	constructor(accountId: string, historicalBalances: HistoricalBalance[], mask: string, officialName: string) {
+	constructor(taxdomeId: string, accountId: string, historicalBalances: HistoricalBalance[], mask: string, officialName: string) {
+		this.clientTaxdomeId = taxdomeId;
 		this.accountId = accountId;
 		this.historicalBalances = historicalBalances;
 		this.mask = mask;
@@ -53,6 +55,7 @@ export default class Account {
 			{ account_id: this.accountId },
 			{
 				$setOnInsert: {
+					client_user_id: this.clientTaxdomeId,
 					account_id: this.accountId,
 					mask: this.mask,
 					officialName: this.officialName,
