@@ -52,7 +52,7 @@
 		"csv-parse": "^5.5.6",
 		"drizzle-orm": "^0.33.0",
 		"lucide-svelte": "^0.460.1",
-		"mongodb": "^6.10.0",
+		"mongodb": "^6.13.0",
 		"plaid": "^30.0.0",
 		"sveltekit-adapter-deno": "^0.16.1",
 		"winston": "^3.17.0"
