@@ -70,7 +70,7 @@ const clientService = {
 		try {
 			const request = new LinkTokenRequest(client);
 			const response = await plaid.linkTokenCreate(request);
-			await model.newLinkResponse(client.id, response);
+			await model.newLinkResponse(client.clientId, response);
 			return response.data['link_token'];
 		} catch (e) {
 			logger.error('Error in Service newLinkCreateRequest:', e);
@@ -89,7 +89,7 @@ const clientService = {
 			const itemResponse = response.data.item;
 			const item = Item.fromPlaidResponse(itemResponse);
 			// add new item record
-			return await model.insertItem(client.id, item.pojo());
+			return await model.insertItem(client.clientId, item.pojo());
 		}	catch (e) {
 			logger.error(e);
 			throw e;
