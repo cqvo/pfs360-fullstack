@@ -14,6 +14,6 @@
 		  />
 		</div>
 	  
-		<button type="submit">Submit</button>
+		<button class="btn preset-tonal-primary" type="submit">Submit</button>
 	  </form>
 </div>
