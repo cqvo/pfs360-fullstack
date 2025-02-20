@@ -1,12 +1,16 @@
 import logger from '$lib/logger';
 import model from '$lib/apps/client/model';
-import { Client, Item } from '$lib/apps/client/model';
+
+import { Item } from '$lib/apps/client/model';
+import Client from '$lib/apps/client/class/Client';
 import { parse } from 'csv-parse/sync';
 import { CountryCode, type AssetReportCreateRequest, type LinkTokenCreateRequest, type LinkTokenCreateRequestUser, Products } from 'plaid';
 import { PLAID_CLIENT_NAME, PLAID_EMAIL, WEBHOOK_URL } from '$lib/config';
 import type { AxiosResponse } from 'npm:axios@1.7.7';
 import { ObjectId } from 'mongodb';
 import plaid from '$lib/server/plaid';
+import TaxdomeRecord from '$lib/apps/client/class/TaxdomeRecord';
+import { connectToDatabase } from '$lib/server/mongodb';
 
 export class LinkTokenRequest implements LinkTokenCreateRequest {
 	client_name: string;
@@ -28,14 +32,14 @@ export class LinkTokenRequest implements LinkTokenCreateRequest {
 }
 
 const clientService = {
-	getClient: async (clientId: string) => {
-		try	{
-			return await model.findClient(clientId);
-		} catch (e) {
-			logger.error('Error in Service getClient:', e);
-			throw e;
-		}
-	},
+	// getClient: async (clientId: string) => {
+	// 	try	{
+	// 		return await Client.findOne(clientId);
+	// 	} catch (e) {
+	// 		logger.error('Error in Service getClient:', e);
+	// 		throw e;
+	// 	}
+	// },
 	getClients: async () => {
 		return await model.findClients();
 	},
@@ -49,19 +53,21 @@ const clientService = {
 	},
 	processTaxdomeCsv: async (file: File) => {
 		try {
-			const content = await file.text();
-			const records: Array<App.TaxdomeRecord> = parse(content, { columns: ['taxdomeId', 'companyName', 'emailAddress'] });
-			if (!records || records.length === 0) {
-				logger.error('No records found in CSV');
+			const content: string = await file.text();
+			const clients: TaxdomeRecord[] = parse(content, {
+				columns: ['taxdomeId', 'companyName', 'emailAddress']
+			}).map((row: TaxdomeRecord) =>
+				new TaxdomeRecord(row.taxdomeId, row.companyName, row.emailAddress)
+			);
+			if (clients.length === 0) {
+				throw new Error('No records found in CSV');
 			}
-			return records;
+			const result = await TaxdomeRecord.updateClientList(clients);
+			console.log(result);
 		} catch (e) {
 			logger.error(e);
 			throw new Error(`Failed to process clients CSV: ${e instanceof Error ? e.message : String(e)}`);
 		}
-	},
-	updateClientList: async (records: App.TaxdomeRecord[]) => {
-		const result = await model.upsertClients(records);
 	},
 	newLinkCreateRequest: async (client: Client) => {
 		try {
@@ -74,34 +80,23 @@ const clientService = {
 			throw e;
 		}
 	},
-	webLinkOnSuccess: async (client, publicToken, metadata, linkToken) => {
+	webLinkOnSuccessHandler: async (client: Client, publicToken: string, accounts: App.Account[], linkToken: string) => {
 		try {
 			//close link token
 			await model.updateLink(linkToken);
 			//exchange token
-			const tokenRequest = { 'public_token': publicToken };
-			const tokenResponse = await plaid.itemPublicTokenExchange(tokenRequest);
+			const tokenResponse = await plaid.itemPublicTokenExchange({ 'public_token': publicToken });
 			const accessToken = tokenResponse.data['access_token'];
 			//get item
-			const itemRequest = { 'access_token': accessToken };
-			const itemResponse = await plaid.itemGet(itemRequest);
-			const item = new Item(itemResponse, metadata, accessToken);
+			const response = await plaid.itemGet({ 'access_token': accessToken });
+			const itemResponse = response.data.item;
+			const item = Item.fromPlaidResponse(itemResponse);
 			// add new item record
 			return await model.insertItem(client.id, item.pojo());
 		}	catch (e) {
 			logger.error(e);
 			throw e;
 		}
-	},
-	newReportRequest: async (client: Client, item: App.Item) => {
-		const request: AssetReportCreateRequest = {
-			'access_tokens': [ item.accessToken ],
-			'days_requested': 61,
-		};
-		const response = await plaid.assetReportCreate(request);
-		const assetReportId = response.data.asset_report_id;
-		const assetReportToken = response.data.asset_report_token;
-		// create new asset report document
 	},
 };
 

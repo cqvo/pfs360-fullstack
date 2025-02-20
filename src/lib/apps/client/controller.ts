@@ -1,6 +1,7 @@
 import model from '$lib/apps/client/model';
 import service from '$lib/apps/client/service';
 import plaid from '$lib/server/plaid';
+
 import { type ItemPublicTokenExchangeRequest } from 'plaid';
 
 const clientController = {

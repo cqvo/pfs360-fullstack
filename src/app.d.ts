@@ -33,6 +33,7 @@ declare global {
 		export interface Item {
 			id: string;
 			accessToken: string;
+			ivHexString?: string;
 			institutionId: string;
 			institutionName: string;
 			status: Status;
@@ -51,6 +52,14 @@ declare global {
 			type: string;
 			subtype: string;
 			verificationStatus?: Status;
+		}
+		export interface AssetReport {
+			clientId: string;
+			id: string;
+			token: string;
+			requestId: string;
+			createdAt: Date;
+			updatedAt: Date;
 		}
 	}
 }

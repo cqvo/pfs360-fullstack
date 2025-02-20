@@ -3,8 +3,9 @@ import type { WithId } from 'mongodb';
 import { ObjectId } from 'mongodb';
 import { Status } from '$lib/constants';
 import type { AxiosResponse } from 'npm:axios@1.7.7';
-import type { LinkTokenCreateRequest, Products } from 'plaid';
+import type { ItemWithConsentFields, LinkTokenCreateRequest, Products } from 'plaid';
 import { encrypt, decrypt } from '$lib/server/crypto';
+import TaxdomeRecord from '$lib/apps/client/class/TaxdomeRecord';
 
 export class Client {
 	id!: string;
@@ -34,35 +35,47 @@ export class Client {
 		return new ObjectId(this.id);
 	}
 }
+// export class Item implements App.Item {
+export class Item {
+	plaidItemId: string;
+	// accessToken: string;
+	// ivHexString?: string;
+	// institutionId: string;
+	// institutionName: string;
+	// status: Status;
+	// products: Products[];
+	// accounts: App.Account[];
+	// webhook: string;
+	// updateType: string;
+	// createdAt: Date;
+	// updatedAt: Date;
+	// consentExpiration: Date;
 
-export class Item implements App.Item {
-	id: string;
-	accessToken: string;
-	institutionId: string;
-	institutionName: string;
-	status: Status;
-	products: Products[];
-	accounts: App.Account[];
-	webhook: string;
-	updateType: string;
-	createdAt: Date;
-	updatedAt: Date;
-	consentExpiration: Date;
+	static fromPlaidResponse(response: ItemWithConsentFields): Item {
+		const props = {
+			plaidItemId: response['item_id'],
+			institutionId: response['institution_id'],
+			institutionName: response['institution_name'],
+			webhook: response['webhook'],
+		}
+		return new Item(props);
+	}
 
-	constructor(data: Record<string, any>, metadata: Record<string, any>, accessToken: string) {
-		const source = data?.data?.item ?? data;
-		this.id = source['item_id'];
-		this.accessToken = accessToken;
-		this.institutionId = source['institution_id'];
-		this.institutionName = source['institution_name'];
-		this.status = Status.Active;
-		this.products = source['products'];
-		this.accounts = metadata['accounts'];
-		this.webhook = source['webhook'];
-		this.updateType = source['update_type'];
-		this.createdAt = new Date(source['created_at']);
-		this.updatedAt = new Date(source['created_at']);
-		this.consentExpiration = new Date(source['consent_expiration_time']);
+	constructor(plaidItemId: string) {
+		this.plaidItemId = plaidItemId;
+		// const source = data?.data?.item ?? data;
+		// this.id = source['item_id'];
+		// this.accessToken = accessToken;
+		// this.institutionId = source['institution_id'];
+		// this.institutionName = source['institution_name'];
+		// this.status = Status.Active;
+		// this.products = source['products'];
+		// this.accounts = metadata['accounts'];
+		// this.webhook = source['webhook'];
+		// this.updateType = source['update_type'];
+		// this.createdAt = new Date(source['created_at']);
+		// this.updatedAt = new Date(source['created_at']);
+		// this.consentExpiration = new Date(source['consent_expiration_time']);
 	}
 
 	pojo() {
@@ -74,27 +87,28 @@ export class Item implements App.Item {
 }
 
 const clientModel = {
-	upsertClients: async (clients: App.TaxdomeRecord[]) => {
+	updateClientList: async (clients: TaxdomeRecord[]) => {
 		const { db } = await connectToDatabase();
-		const collection = db.collection('clients');
-		const operations = clients.map((client) => ({
-			updateOne: {
-				filter: {
-					taxdomeId: client.taxdomeId
-				},
-				update: {
-					$set: {
-						companyName: client.companyName,
-						emailAddress: client.emailAddress
-					},
-					$setOnInsert: {
-						taxdomeId: client.taxdomeId
-					}
-				},
-				upsert: true
-			}
-		}));
-		return await collection.bulkWrite(operations);
+		// const collection = db.collection('clients');
+		// const operations = clients.map((client) => ({
+		// 	updateOne: {
+		// 		filter: {
+		// 			taxdome_id: client.taxdomeId
+		// 		},
+		// 		update: {
+		// 			$set: {
+		// 				company_name: client.companyName,
+		// 				email_address: client.emailAddress
+		// 			},
+		// 			$setOnInsert: {
+		// 				taxdome_id: client.taxdomeId
+		// 			}
+		// 		},
+		// 		upsert: true
+		// 	}
+		// }));
+		// return await collection.bulkWrite(operations);
+		await TaxdomeRecord.updateClientList(clients);
 	},
 	findClients: async () => {
 		const { db } = await connectToDatabase();

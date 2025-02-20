@@ -3,7 +3,7 @@
 </script>
 
 <div>
-	<form method="post" use:enhance enctype="multipart/form-data">
+	<form method="POST" use:enhance enctype="multipart/form-data" action="?/uploadCsv">
 		<div class="group">
 		  <label for="file">Upload your file</label>
 		  <input
