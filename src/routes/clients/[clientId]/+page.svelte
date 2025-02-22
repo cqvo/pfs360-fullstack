@@ -122,7 +122,7 @@
 							<button type="submit" class="btn preset-tonal-primary"> Request New Data </button>
 						</form>
 						{#each item.accounts as account}
-							<dt>{account.name} - <a href="/api/v1/reports/{account.account_id}" class="anchor">Download Balances</a></dt>
+							<dt>{account.name} - <a href="/api/v1/balances/{account.account_id}" class="anchor">Download Balances</a> - <a href="/api/v1/transactions/{account.account_id}" class="anchor">Download Transactions</a></dt>
 						{/each}
 					</dl>
 				{/snippet}

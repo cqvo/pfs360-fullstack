@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ params }) => {
 
 	// Assume each balance entry has a date and current (balance) field.
 	// Adjust the header and row fields as needed.
-	const header = ['date', 'balance'];
+	const header = ['date', 'amount','description','pending'];
 	const rows = [header.join(',')];
 
 	// If dates are stored as Date objects in MongoDB they may be returned as strings;
@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ params }) => {
 	return new Response(csvContent, {
 		headers: {
 			'Content-Type': 'text/csv',
-			'Content-Disposition': `attachment; filename="${account.officialName}_${account.mask}_transactions.csv"`
+			'Content-Disposition': `attachment; filename="${account.name}_${account.mask}_transactions.csv"`
 		}
 	});
 
