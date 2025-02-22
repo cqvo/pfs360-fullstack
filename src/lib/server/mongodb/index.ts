@@ -20,7 +20,17 @@ export const connectToDatabase = async (): Promise<{ client: MongoClient; db: Db
 		});
 		await client.connect();
 		db = client.db("pfs"); // Connect to the 'pfs' database
-		console.log("✅ Connected to MongoDB (pfs)");
+		console.log("✅ Connected to MongoDB:", db.databaseName);
+
+		const collections = ['clients', 'accounts', 'reports', 'users'];
+		const existingCollections = await db.listCollections().toArray();
+		const existingCollectionNames = existingCollections.map(col => col.name);
+		for (const collection of collections) {
+			if (!existingCollectionNames.includes(collection)) {
+				await db.createCollection(collection);
+				console.log(`Created collection: ${collection}`);
+			}
+		}
 	}
 	return { client, db };
 };

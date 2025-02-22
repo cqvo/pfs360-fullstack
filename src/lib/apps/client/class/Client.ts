@@ -22,17 +22,20 @@ export default class Client extends TaxdomeRecord {
 
 	static async findOne(clientId: string) {
 		const { db } = await connectToDatabase();
+		if (!db) throw new Error('Client findOne: No database connection');
 		const collection = db.collection('clients');
 		console.log('Client findOne searching for', clientId);
 		const record = await collection.findOne({
 			_id: new ObjectId(clientId)
 		});
+		console.log('Client findOne record', record);
 		if (!record) throw new Error('Client findOne: Client not found');
 		return new Client(record._id.toString(), record.taxdome_id, record.company_name, record.email, record.links, record.items, record.created_at, record.updated_at);
 	}
 
 	static async findAll() {
 		const { db } = await connectToDatabase();
+		if (!db) throw new Error('Client findAll: No database connection');
 		const collection = db.collection('clients');
 		const records = await collection.find({}).toArray();
 		return records.map(record => new Client(
