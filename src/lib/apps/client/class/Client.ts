@@ -27,6 +27,7 @@ export default class Client extends TaxdomeRecord {
 		const record = await collection.findOne({
 			_id: new ObjectId(clientId)
 		});
+		console.log('Client findOne record', record);
 		if (!record) throw new Error('Client findOne: Client not found');
 		return new Client(record._id.toString(), record.taxdome_id, record.company_name, record.email, record.links, record.items, record.created_at, record.updated_at);
 	}
