@@ -55,6 +55,7 @@
 		"mongodb": "^6.13.0",
 		"plaid": "^30.0.0",
 		"sveltekit-adapter-deno": "^0.16.1",
+		"vercel": "^41.2.0",
 		"winston": "^3.17.0"
 	}
 }

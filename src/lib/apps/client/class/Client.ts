@@ -22,6 +22,7 @@ export default class Client extends TaxdomeRecord {
 
 	static async findOne(clientId: string) {
 		const { db } = await connectToDatabase();
+		if (!db) throw new Error('Client findOne: No database connection');
 		const collection = db.collection('clients');
 		console.log('Client findOne searching for', clientId);
 		const record = await collection.findOne({
@@ -34,6 +35,7 @@ export default class Client extends TaxdomeRecord {
 
 	static async findAll() {
 		const { db } = await connectToDatabase();
+		if (!db) throw new Error('Client findAll: No database connection');
 		const collection = db.collection('clients');
 		const records = await collection.find({}).toArray();
 		return records.map(record => new Client(
