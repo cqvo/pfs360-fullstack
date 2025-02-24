@@ -20,7 +20,7 @@ export const GET: RequestHandler = async ({ params }) => {
 	for (const entry of account.transactions) {
 		const date = new Date(entry.date).toISOString();
 		const amount = entry.amount;
-		const description = entry.original_description;
+		const description = entry.description;
 		const pending = entry.pending;
 		rows.push(`${date},${amount},${description},${pending}`);
 	}
