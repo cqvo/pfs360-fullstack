@@ -28,7 +28,7 @@ export const GET: RequestHandler = async ({ params }) => {
 	return new Response(csvContent, {
 		headers: {
 			'Content-Type': 'text/csv',
-			'Content-Disposition': `attachment; filename="${account.officialName}_${account.mask}_dailybalance.csv"`
+			'Content-Disposition': `attachment; filename="${account.name}_${account.mask}_dailybalance.csv"`
 		}
 	});
 

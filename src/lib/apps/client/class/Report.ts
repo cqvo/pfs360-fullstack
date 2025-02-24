@@ -10,7 +10,7 @@ import { WEBHOOK_URL } from '$lib/config';
 import { connectToDatabase } from '$lib/server/mongodb';
 import Item from '$lib/apps/client/class/Item';
 import Account from '$lib/apps/client/class/Account';
-import HistoricalBalance from '$lib/apps/client/class/HistoricalBalance';
+import type HistoricalBalance from '$lib/apps/client/type/HistoricalBalance';
 
 export default class Report {
 	reportToken: string;
@@ -111,21 +111,37 @@ export default class Report {
 	}
 
 	getAccounts() {
+		if (!this.raw) throw new Error('Report getAccounts: Raw report data not found');
 		const accounts = [];
+		const taxdomeId = this.raw.report.user['client_user_id'] || '';
 		for (const account of this.raw.report.items[0].accounts) {
 			const historicalBalances = [];
 			for (const balance of account['historical_balances']) {
-				historicalBalances.push(new HistoricalBalance(
-					balance['current'],
-					new Date(balance['date']),
-					balance['iso_currency_code']
-				));
+				const historicalBalance: HistoricalBalance = {
+					current: balance['current'],
+					date: new Date(balance['date']),
+					currencyCode: balance['iso_currency_code'],
+				};
+				historicalBalances.push(historicalBalance);
+			}
+			const transactions = [];
+			for (const transaction of account['transactions']) {
+				transactions.push({
+					amount: transaction['amount'],
+					date: new Date(transaction['date']),
+					description: transaction['original_description'] || '',
+					currencyCode: transaction['iso_currency_code'] || '',
+					pending: transaction['pending'],
+					id: transaction['transaction_id'],
+				});
 			}
 			accounts.push(new Account(
-				account['client_user_id'],
+				taxdomeId,
 				account['account_id'],
 				historicalBalances,
+				transactions,
 				account['mask'],
+				account['name'],
 				account['official_name'],
 			));
 		}
