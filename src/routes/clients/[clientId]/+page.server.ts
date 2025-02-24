@@ -10,6 +10,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	try {
 		const client = await Client.findOne(params.clientId);
 		const link = await client.findValidLink();
+		console.log('[clientId]/+page.server.ts client', client);
 		return {
 			companyName: client.companyName,
 			items: client.items,
