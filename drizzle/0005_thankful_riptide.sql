@@ -1,1 +1,0 @@
-ALTER TABLE "dim_items" DROP COLUMN IF EXISTS "key_date";

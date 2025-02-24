@@ -1,1 +1,0 @@
-ALTER TABLE "dim_items" ADD COLUMN "status" varchar NOT NULL;

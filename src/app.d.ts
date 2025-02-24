@@ -6,13 +6,9 @@ import type { Products } from 'plaid';
 
 declare global {
 	namespace App {
-		// interface Error {}
 		interface Locals {
 			client?: ClientRecord;
 		}
-		// interface PageData {}
-		// interface PageState {}
-		// interface Platform {}
 		export interface TaxdomeRecord {
 			taxdomeId: string;
 			companyName: string;
