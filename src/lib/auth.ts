@@ -1,6 +1,7 @@
 import { SvelteKitAuth } from '@auth/sveltekit';
 import Credentials from '@auth/sveltekit/providers/credentials';
 import User from '$lib/apps/client/class/User';
+import { VERCEL_ENV } from '$lib/config';
 
 const providers = [
 	Credentials({
@@ -19,6 +20,12 @@ const providers = [
 	})
 ];
 
+let trustHost = {};
+if (VERCEL_ENV !== 'production') {
+	trustHost = { trustHost: true };
+}
+
 export const { signIn, signOut, handle } = SvelteKitAuth({
-	providers
+	providers,
+	...trustHost
 });

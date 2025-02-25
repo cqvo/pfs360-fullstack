@@ -5,7 +5,7 @@ import { handle as authHandle } from '$lib/auth';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const response = await authHandle({ event, resolve });
-	if (response) return response;
+	console.log('hooks.server.ts: authHandle response', response);
 
 	const session = await event.locals.auth();
 	if (session?.user?.email) {
