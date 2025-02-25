@@ -1,4 +1,5 @@
-import type { Actions, PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types';
+import type { Actions } from '@sveltejs/kit';
 
 let user = null;
 
