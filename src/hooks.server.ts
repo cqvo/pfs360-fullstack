@@ -8,6 +8,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const session = await event.locals.auth();
 	if (session?.user?.email) {
 		const user = await User.findOne(session.user.email);
+		console.log('hooks.server.ts: user', user);
 		if (!user) {
 			throw new Error('hooks.server.ts: No user found.');
 		}

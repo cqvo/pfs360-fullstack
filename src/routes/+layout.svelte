@@ -31,7 +31,7 @@
 	{#if !data.session}
 		<Navigation.Tile
 			id="signInTile"
-			label="Sign In'}"
+			label="Sign In"
 			width="w-24"
 			onclick={() => {
 				signIn();

@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { PageProps } from './$types';
+	// import type { PageProps } from './$types';
 	import { enhance } from '$app/forms';
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
 	import { getContext } from 'svelte';
 	import { type ToastContext } from '@skeletonlabs/skeleton-svelte';
 
 	export const toast: ToastContext = getContext('toast');
-	let { data }: PageProps = $props();
+	let { data } = $props();
 	let group = $state('changePassword');
 	let currentPassword = $state('');
 	let newPassword = $state('');
