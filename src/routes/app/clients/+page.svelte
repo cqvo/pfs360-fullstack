@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { PageData } from '../../../../.svelte-kit/types/src/routes';
 	import { writable, derived } from 'svelte/store';
 	import ArrowDownAZ from 'lucide-svelte/icons/arrow-down-a-z';
 	import ArrowDownZA from 'lucide-svelte/icons/arrow-down-z-a';
@@ -64,7 +64,7 @@
 		{#each $sortedClients as client}
 			<tr>
 				<td>
-					<a href="/clients/{client.clientId}" class="anchor">
+					<a href="/app/clients/{client.clientId}" class="anchor">
 						{client.companyName}
 					</a>
 				</td>

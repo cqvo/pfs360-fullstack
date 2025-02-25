@@ -1,4 +1,4 @@
-import type { Actions, PageServerLoad } from './$types';
+import type { Actions, PageServerLoad } from '../../../../../.svelte-kit/types/src/routes';
 import { error } from '@sveltejs/kit';
 import logger from '$lib/logger';
 import Client from '$lib/apps/client/class/Client';

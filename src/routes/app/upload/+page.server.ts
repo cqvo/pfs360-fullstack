@@ -1,4 +1,4 @@
-import type { Actions } from './$types';
+import type { Actions } from '../../../../.svelte-kit/types/src/routes';
 import { fail } from '@sveltejs/kit';
 import TaxdomeRecord from '$lib/apps/client/class/TaxdomeRecord';
 

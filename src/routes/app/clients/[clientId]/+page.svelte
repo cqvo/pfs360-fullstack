@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { PageData } from '../../../../../.svelte-kit/types/src/routes';
 	import { onMount } from 'svelte';
 	import { enhance } from '$app/forms';
 	import { Accordion, Modal } from '@skeletonlabs/skeleton-svelte';
