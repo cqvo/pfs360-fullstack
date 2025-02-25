@@ -25,7 +25,7 @@ const pages = {
 }
 
 let trustHost = {};
-if (VERCEL_ENV !== 'production') {
+if (VERCEL_ENV) {
 	trustHost = { trustHost: true };
 }
 
