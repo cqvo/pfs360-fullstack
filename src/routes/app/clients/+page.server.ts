@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from '../../../../.svelte-kit/types/src/routes';
 // import clientService from '$lib/apps/client/service';
 import Client from '$lib/apps/client/class/Client';
 export const load: PageServerLoad = async () => {

@@ -6,7 +6,9 @@ let user: User | null = null;
 
 export const load: PageServerLoad = async (event) => {
 	user = event.locals.user as User;
-	console.log('load user', user);
+	return {
+		role: '',
+	}
 };
 
 export const actions = {

@@ -20,6 +20,10 @@ const providers = [
 	})
 ];
 
+const pages = {
+	signIn: '/signin',
+}
+
 let trustHost = {};
 if (VERCEL_ENV !== 'production') {
 	trustHost = { trustHost: true };
@@ -27,5 +31,6 @@ if (VERCEL_ENV !== 'production') {
 
 export const { signIn, signOut, handle } = SvelteKitAuth({
 	providers,
+	// pages,
 	...trustHost
 });

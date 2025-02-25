@@ -1,5 +1,5 @@
 <script lang="ts">
-	import '../app.css';
+	import '../../app.css';
 	let { data, children } = $props();
 	import { AppBar, Navigation, ToastProvider } from '@skeletonlabs/skeleton-svelte';
 	import {
@@ -16,16 +16,16 @@
 </script>
 
 <header class="flex h-min justify-center gap-2 p-2">
-	<Navigation.Tile label="Dashboard" href="/" width="w-24">
+	<Navigation.Tile label="Dashboard" href="/app" width="w-24">
 		<LayoutGrid />
 	</Navigation.Tile>
-	<Navigation.Tile label="Clients" href="/clients" width="w-24">
+	<Navigation.Tile label="Clients" href="/app/clients" width="w-24">
 		<Users />
 	</Navigation.Tile>
-	<Navigation.Tile label="Upload" href="/upload" width="w-24">
+	<Navigation.Tile label="Upload" href="/app/upload" width="w-24">
 		<CloudUpload />
 	</Navigation.Tile>
-	<Navigation.Tile label="Settings" href="/settings" width="w-24">
+	<Navigation.Tile label="Settings" href="/app/settings" width="w-24">
 		<Settings />
 	</Navigation.Tile>
 	{#if !data.session}
@@ -53,7 +53,7 @@
 </header>
 
 <ToastProvider placement="top-end">
-	<main class="container mx-auto">
+	<main class="container mx-auto max-w-screen-lg">
 		{@render children()}
 	</main>
 </ToastProvider>
