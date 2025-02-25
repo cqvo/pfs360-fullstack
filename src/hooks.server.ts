@@ -4,7 +4,9 @@ import User from '$lib/apps/client/class/User';
 import { handle as authHandle } from '$lib/auth';
 
 export const handle: Handle = async ({ event, resolve }) => {
-	await authHandle({ event, resolve: (evt) => Promise.resolve() });
+	const response = await authHandle({ event, resolve });
+	if (response) return response;
+
 	const session = await event.locals.auth();
 	if (session?.user?.email) {
 		const user = await User.findOne(session.user.email);
