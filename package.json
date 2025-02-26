@@ -26,12 +26,10 @@
 		"@types/bcrypt": "^5.0.2",
 		"@types/eslint": "^9.6.0",
 		"autoprefixer": "^10.4.20",
-		"drizzle-kit": "^0.22.0",
 		"eslint": "^9.7.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.36.0",
 		"globals": "^15.0.0",
-		"jsdoc": "^4.0.4",
 		"prettier": "^3.3.2",
 		"prettier-plugin-svelte": "^3.2.6",
 		"prettier-plugin-tailwindcss": "^0.6.5",
@@ -47,18 +45,14 @@
 	},
 	"dependencies": {
 		"@auth/sveltekit": "^1.7.4",
-		"@neondatabase/serverless": "^0.9.4",
 		"@sveltejs/kit": "^2.8.1",
 		"@tailwindcss/forms": "^0.5.9",
 		"@tailwindcss/typography": "^0.5.15",
-		"@vincjo/datatables": "^2.0.5",
 		"bcrypt": "^5.1.1",
 		"csv-parse": "^5.5.6",
-		"drizzle-orm": "^0.33.0",
 		"lucide-svelte": "^0.460.1",
 		"mongodb": "^6.13.0",
 		"plaid": "^30.0.0",
-		"sveltekit-adapter-deno": "^0.16.1",
 		"winston": "^3.17.0"
 	}
 }

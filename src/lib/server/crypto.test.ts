@@ -3,22 +3,25 @@ import { encrypt, decrypt } from './crypto';
 
 describe('Crypto Module', () => {
     const plaintext = 'Hello, World!';
-    let encrypted: string[];
+    let result;
+    let encrypted: string;
     let ivHexString: string;
 
     beforeAll(async () => {
-        encrypted = await encrypt(plaintext);
-        ivHexString = encrypted[1];
+        result = await encrypt(plaintext);
+        console.log('encrypted', result);
+        encrypted = result.encrypted;
+        ivHexString = result.ivHexString;
     });
 
-    it('encrypt should return an array with encrypted text and IV', () => {
-        expect(encrypted).toHaveLength(2);
-        expect(typeof encrypted[0]).toBe('string');
-        expect(typeof encrypted[1]).toBe('string');
+    it('encrypt should return an object with encrypted text and IV', () => {
+        expect(typeof result).toBe('object');
+        expect(typeof encrypted).toBe('string');
+        expect(typeof ivHexString).toBe('string');
     });
 
     it('decrypt should return the original plaintext', async () => {
-        const decrypted = await decrypt(encrypted[0], ivHexString);
+        const decrypted = await decrypt(encrypted, ivHexString);
         expect(decrypted).toBe(plaintext);
     });
 });
