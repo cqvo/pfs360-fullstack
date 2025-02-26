@@ -1,0 +1,22 @@
+[
+	{
+		"date": "2025-02-26",
+		"title": "1.1.0",
+		"content": "",
+		"list": [
+          "Added Auth.js to handle authentication via Credentials.",
+          "Added changelog feature (you're reading it right now).",
+          "Changed 'Request Data' functionality to try to prevent making multiple requests.",
+          "Updated the Client page to display accounts in a table.",
+			"Added documentation to the Upload page.",
+			"Added an easter egg to the main app page for Chris."
+        ]
+	},
+	{
+		"date": "2025-02-24",
+		"title": "1.0.0",
+		"content": "we did it",
+		"list": [
+        ]
+	}
+]
