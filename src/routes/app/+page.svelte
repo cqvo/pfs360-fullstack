@@ -8,8 +8,8 @@
 </script>
 
 <section class="mx-auto">
-	{#if user.email === 'admin@pfs360llc.com'}
-		<p class="text-center">Welcome Chris!</p>
+	{#if user.email === 'chris@pfs360llc.com'}
+		<h3 class="h3 text-center">Welcome Chris!</h3>
 	<img src={chrisbowling} alt="logo" class="mx-auto" />
 		{:else}
 		<img src={logo} alt="logo" class="mx-auto" />
