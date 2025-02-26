@@ -3,7 +3,7 @@ import linkService from './linkService';
 import model from '$lib/apps/links/linkModel';
 import plaid from '$lib/server/plaid';
 import logger from '$lib/logger';
-import { PLAID_CLIENT_NAME, PLAID_EMAIL, WEBHOOK_URL } from '$lib/config';
+import { PLAID_CLIENT_NAME, PLAID_EMAIL, WEBHOOK_URL } from '$env/static/private';
 import { CountryCode, Products, HostedLinkDeliveryMethod } from 'plaid';
 
 vi.mock('$lib/apps/links/linkModel');

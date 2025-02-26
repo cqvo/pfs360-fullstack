@@ -1,9 +1,15 @@
-import { PLAID_CLIENT_NAME, PLAID_EMAIL, WEBHOOK_URL } from '$lib/config';
+import {
+    PLAID_CLIENT_NAME,
+    PLAID_EMAIL, VERCEL_BRANCH_URL,
+    VERCEL_ENV,
+    VERCEL_PROJECT_PRODUCTION_URL
+} from '$env/static/private';
 import model from '$lib/apps/links/linkModel';
 import plaid from '$lib/server/plaid';
 import logger from '$lib/logger';
 import { CountryCode, Products } from 'plaid';
-
+const	WEBHOOK_URL =
+  VERCEL_ENV === 'production' ? `https://${VERCEL_PROJECT_PRODUCTION_URL}/api/v1/webhook` : `https://${VERCEL_BRANCH_URL}/api/v1/webhook`;
 const linkService = {
     constructLinkCreateRequest: async (clientId: number) => {
         try {

@@ -5,7 +5,7 @@ import { Item } from '$lib/apps/client/model';
 import Client from '$lib/apps/client/class/Client';
 import { parse } from 'csv-parse/sync';
 import { CountryCode, type LinkTokenCreateRequest, type LinkTokenCreateRequestUser, Products } from 'plaid';
-import { PLAID_CLIENT_NAME, PLAID_EMAIL } from '$lib/config';
+import { PLAID_CLIENT_NAME, PLAID_EMAIL } from '$env/static/private';
 import plaid from '$lib/server/plaid';
 import TaxdomeRecord from '$lib/apps/client/class/TaxdomeRecord';
 

@@ -1,5 +1,5 @@
 import { MongoClient, Db, ServerApiVersion } from 'mongodb';
-import { MONGODB_URL } from '$lib/config';
+import { MONGODB_URI } from '$env/static/private';
 
 let client: MongoClient;
 let db: Db;
@@ -11,7 +11,7 @@ let db: Db;
 export const connectToDatabase = async (): Promise<{ client: MongoClient; db: Db }> => {
 	if (!client) {
 		// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-		client = new MongoClient(MONGODB_URL, {
+		client = new MongoClient(MONGODB_URI, {
 			serverApi: {
 				version: ServerApiVersion.v1,
 				strict: true,

@@ -1,5 +1,8 @@
 import model from '$lib/apps/reports/model';
-import { WEBHOOK_URL } from '$lib/config';
+import { VERCEL_BRANCH_URL, VERCEL_ENV, VERCEL_PROJECT_PRODUCTION_URL } from '$env/static/private';
+const	WEBHOOK_URL =
+  VERCEL_ENV === 'production' ? `https://${VERCEL_PROJECT_PRODUCTION_URL}/api/v1/webhook` : `https://${VERCEL_BRANCH_URL}/api/v1/webhook`;
+
 
 const todayYYYYMMDD = () => {
     const date = new Date();
