@@ -10,7 +10,7 @@
 		CloudUpload,
 		Settings,
 		LogIn,
-		LogOut
+		LogOut, Logs
 	} from 'lucide-svelte';
 	import { signIn, signOut } from '@auth/sveltekit/client';
 </script>
@@ -27,6 +27,9 @@
 	</Navigation.Tile>
 	<Navigation.Tile label="Settings" href="/app/settings" width="w-24">
 		<Settings />
+	</Navigation.Tile>
+	<Navigation.Tile label="Changelog" href="/app/changelog" width="w-24">
+		<Logs />
 	</Navigation.Tile>
 	{#if !data.session}
 		<Navigation.Tile
@@ -53,7 +56,7 @@
 </header>
 
 <ToastProvider placement="top-end">
-	<main class="container mx-auto max-w-screen-lg">
+	<main class="container mx-auto max-w-screen-lg space-y-4">
 		{@render children()}
 	</main>
 </ToastProvider>
