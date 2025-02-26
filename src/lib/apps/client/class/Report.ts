@@ -76,7 +76,8 @@ export default class Report {
 			response.data['asset_report_id'],
 			response.data['request_id']
 		);
-		await report.insertStub();
+		const result = await report.insertStub();
+		return result.acknowledged;
 		console.log('Report createNewRequest', report);
 	}
 
