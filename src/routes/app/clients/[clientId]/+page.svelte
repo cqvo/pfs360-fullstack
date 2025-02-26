@@ -76,7 +76,25 @@
 </script>
 
 <h1 class="h1">{data.companyName}</h1>
-
+<form
+	method="post"
+	action="?/newToken"
+	use:enhance={() => {
+				return async ({ result }) => {
+					if (result.data.success === true) {
+						openLinkToken = result.data.linkToken;
+						await initializePlaid(openLinkToken);
+						openPlaid();
+					} else {
+						console.error('Failed to generate link token');
+					}
+				};
+			}}
+>
+	<button class="btn preset-tonal-primary" type="submit">
+		pres
+	</button>
+</form>
 <Modal
 	bind:open={linkModalOpenState}
 	triggerBase="btn preset-tonal-primary"
@@ -86,24 +104,7 @@
 	{#snippet trigger()}Link New Bank{/snippet}
 	{#snippet content()}
 		<h3 class="h3">Step 1</h3>
-		<form
-			method="post"
-			action="?/newToken"
-			use:enhance={() => {
-				return async ({ result }) => {
-					if (result.data.success === true) {
-						openLinkToken = result.data.linkToken;
-						initializePlaid(openLinkToken);
-					} else {
-						console.error('Failed to generate link token');
-					}
-				};
-			}}
-		>
-			<button class="btn preset-tonal-primary {openLinkToken ? 'disabled' : ''}" type="submit">
-				Generate Link Token
-			</button>
-		</form>
+
 		<h3 class="h3">Step 2</h3>
 		<button
 			class="btn preset-tonal-primary {openLinkToken ? '' : 'disabled'}"

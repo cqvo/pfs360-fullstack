@@ -8,7 +8,7 @@ import Report from '$lib/apps/client/class/Report';
 
 export const load: PageServerLoad = async ({ params }) => {
 	try {
-		const client = await Client.findOne(params.clientId);
+		const client = await Client.findByProperty({taxdome_id: params.clientId});
 		const link = await client.findValidLink();
 		return {
 			companyName: client.companyName,
@@ -23,10 +23,8 @@ export const load: PageServerLoad = async ({ params }) => {
 export const actions = {
 	newToken: async ({ params }) => {
 		try {
-			const client = await Client.findOne(params.clientId);
-			const request = Link.constructCreateRequest(client);
-			const link = await Link.createNewToken(request);
-			await client.addLink(link);
+			const client = await Client.findByProperty({taxdome_id: params.clientId});
+			const link = await client.createNewLink();
 			if (link) {
 			return {
 				success: true,

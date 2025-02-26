@@ -1,119 +1,87 @@
-import { connectToDatabase } from '$lib/server/mongodb';
-import TaxdomeRecord from '$lib/apps/client/class/TaxdomeRecord';
-import Link from '$lib/apps/client/class/Link';
-import Item from '$lib/apps/client/class/Item';
-import { ObjectId } from 'mongodb';
+import { type Document, ObjectId, type WithId } from 'mongodb';
+import type ILink from '$lib/apps/client/type/ILink';
+import { CountryCode, type LinkTokenCreateRequest, Products } from 'plaid';
+import plaid from '$lib/server/plaid';
+import { DocumentFactory } from '$lib/apps/client/class/DocumentFactory';
+import { PLAID_CLIENT_NAME, PLAID_EMAIL } from '$env/static/private';
 
-export default class Client extends TaxdomeRecord {
+export default class Client extends DocumentFactory {
+	_id: ObjectId;
 	clientId: string;
-	links: Link[];
-	items: Item[];
+	companyName: string;S
+	email: string;
+	links: ILink[];
+	items: string[];
 	createdAt: Date;
 	updatedAt: Date;
 
-	constructor (id: string, taxdomeId: string, name: string, email: string, links: Link[], items: Item[], createdAt?: Date, updatedAt?: Date) {
-		super(taxdomeId, name, email);
-		this.clientId = id;
-		this.links = links || [];
-		this.items = items || [];
-		this.createdAt = createdAt || new Date();
-		this.updatedAt = updatedAt || new Date();
+	static collectionName() {
+		return 'clients';
 	}
 
-	static async findOne(clientId: string) {
-		const { db } = await connectToDatabase();
-		if (!db) throw new Error('Client findOne: No database connection');
-		const collection = db.collection('clients');
-		console.log('Client findOne searching for', clientId);
-		const record = await collection.findOne({
-			_id: new ObjectId(clientId)
-		});
-		console.log('Client findOne record', record);
-		if (!record) throw new Error('Client findOne: Client not found');
-		return new Client(record._id.toString(), record.taxdome_id, record.company_name, record.email, record.links, record.items, record.created_at, record.updated_at);
+	constructor(props) {
+		super();
+		this.clientId = props.clientId;
+		this.companyName = props.companyName;
+		this.email = props.email;
+		this.links = props.links || [];
+		this.items = props.items || [];
+		this.createdAt = props.createdAt || new Date();
+		this.updatedAt = props.updatedAt || new Date();
 	}
 
-	static async findAll() {
-		const { db } = await connectToDatabase();
-		if (!db) throw new Error('Client findAll: No database connection');
-		const collection = db.collection('clients');
-		const records = await collection.find({}).toArray();
-		return records.map(record => new Client(
-			record._id.toString(),
-			record.taxdome_id,
-			record.company_name,
-			record.email_address,
-			record.links,
-			record.items,
-			record.createdAt,
-			record.updatedAt
-		));
+	static fromRecord(record: WithId<Document>) {
+		const props = {
+			_id: record['_id'],
+			clientId: record['client_id'] || record['taxdome_id'],
+			companyName: record['company_name'],
+			email: record['email_address'],
+			links: record['links'],
+			items: record['items'],
+			createdAt: record['created_at'],
+			updatedAt: record['updated_at']
+		};
+		return new Client(props);
 	}
 
-	pojo() {
-		return { ...this };
-	}
-
-	async findValidLink () {
+	async findValidLink() {
 		const now = new Date();
-		// const link = this.links.find(link => link.expiration > now);
-		const links = this.links.map(linkData => new Link(
-			linkData.linkToken,
-			linkData.requestId,
-			linkData.expiration
-		));
-		for (const link of links) {
-			if (link.expiration > now) {
-				return link;
-			}
-			await link.removeFromClient(this);
+		for (const link of this.links) {
+			if (link.expiration > now) return link;
+			const updateDocument = {
+				$pull: { links: { linkToken: link.linkToken } }
+			};
+			await Client.updateById(this._id, updateDocument);
 		}
 		return null;
 	}
 
-	async addLink(link: Link) {
-		const { db } = await connectToDatabase();
-		const collection = db.collection('clients');
-		const filter = { _id: new ObjectId(this.clientId) };
-		const updateDocument = {
-			$push: {
-				links: {
-					'link_token': link.linkToken,
-					'expiration': link.expiration,
-					'request_id': link.requestId,
-				}
-			}
+	async createNewLink() {
+		const request: LinkTokenCreateRequest = {
+			'user': {
+			'client_user_id': this.taxdomeId || this.clientId,
+				'email_address': PLAID_EMAIL || 'pfs@wumbo.tech',
+		},
+			'client_name': PLAID_CLIENT_NAME || 'PFS360',
+			'products': [Products.Assets],
+			'country_codes': [CountryCode.Us],
+			'language': 'en',
+			'webhook': Client.webhookUrl(),
+		}
+		const response = await plaid.linkTokenCreate(request);
+		if (!response || !response.data) throw new Error(`Client createNewLink: No response data`);
+		const link: ILink = {
+			linkToken: response.data['link_token'],
+			requestId: response.data['request_id'],
+			expiration: new Date(response.data['expiration'])
 		};
-		const result = await collection.updateOne(filter, updateDocument);
-		console.log('Added link result', result);
+		const updateDocument = { $push: { links: link } };
+		await Client.updateById(this._id, updateDocument);
+		return link;
 	}
 
-	async removeLink(link: Link) {
-		const { db } = await connectToDatabase();
-		const collection = db.collection('clients');
-		const filter = { _id: new ObjectId(this.clientId) };
-		const updateDocument = {
-			$pull: { links: { linkToken: link.linkToken } }
-		}
-		const result = await collection.updateOne(filter, updateDocument);
-		console.log('Removed link result', result);
-	}
-
-	async upsertItem(item: Item) {
-		const { db } = await connectToDatabase();
-		const collection = db.collection('clients');
-		const updateResult = await collection.updateOne(
-			{ _id: new ObjectId(this.clientId), "items.itemId": item.itemId },
-			{ $set: { "items.$": item } }
-		);
-		if (updateResult.modifiedCount === 0) {
-			const result = await collection.updateOne(
-				{ _id: new ObjectId(this.clientId) },
-				{ $push: { items: item } }
-			);
-			console.log('Client upsertItem', result);
-			return result;
-		}
-		return updateResult;
+	async removeLink(link: ILink) {
+		const updateDocument = { $pull: { links: { linkToken: link.linkToken } } };
+		await Client.updateById(this._id, updateDocument);
 	}
 }
