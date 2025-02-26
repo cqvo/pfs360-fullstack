@@ -1,10 +1,19 @@
 import { connectToDatabase } from '$lib/server/mongodb';
 import type { LinkTokenCreateRequest } from 'plaid';
 import { CountryCode, Products } from 'plaid';
-import { PLAID_CLIENT_NAME, PLAID_EMAIL, WEBHOOK_URL } from '$lib/config';
+import {
+	PLAID_CLIENT_NAME,
+	PLAID_EMAIL, VERCEL_BRANCH_URL,
+	VERCEL_ENV,
+	VERCEL_PROJECT_PRODUCTION_URL
+} from '$env/static/private';
 import plaid from '$lib/server/plaid';
 import Client from '$lib/apps/client/class/Client';
 import { ObjectId } from 'mongodb';
+
+const	WEBHOOK_URL =
+	VERCEL_ENV === 'production' ? `https://${VERCEL_PROJECT_PRODUCTION_URL}/api/v1/webhook` : `https://${VERCEL_BRANCH_URL}/api/v1/webhook`;
+
 
 export default class Link {
 	linkToken: string;

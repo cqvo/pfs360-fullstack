@@ -1,7 +1,7 @@
 import { SvelteKitAuth } from '@auth/sveltekit';
 import Credentials from '@auth/sveltekit/providers/credentials';
 import User from '$lib/apps/client/class/User';
-import { VERCEL_ENV } from '$lib/config';
+import { VERCEL_ENV } from '$env/static/private';
 
 const providers = [
 	Credentials({
