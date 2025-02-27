@@ -1,6 +1,6 @@
 {
 	"name": "pfs360-fullstack-sveltekit",
-	"version": "0.0.1",
+	"version": "1.1.1",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
@@ -45,12 +45,12 @@
 	},
 	"dependencies": {
 		"@auth/sveltekit": "^1.7.4",
-		"@sveltejs/kit": "^2.8.1",
+		"@sveltejs/kit": "2.8.3",
 		"@tailwindcss/forms": "^0.5.9",
 		"@tailwindcss/typography": "^0.5.15",
 		"bcrypt": "^5.1.1",
 		"csv-parse": "^5.5.6",
-		"lucide-svelte": "^0.460.1",
+		"lucide-svelte": "^0.476.0",
 		"mongodb": "^6.13.0",
 		"plaid": "^30.0.0",
 		"winston": "^3.17.0"
