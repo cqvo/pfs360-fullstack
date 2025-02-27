@@ -1,5 +1,17 @@
 [
 	{
+		"date": "2025-02-27",
+		"title": "1.1.1",
+		"content": "",
+		"list": [
+			"Upgraded SvelteKit to 2.8.3.",
+			"Fixed minor bug in the navigation that was causing the page to not render when being run in development mode.",
+			"Moved navigation into its own Svelte component.",
+			"Changed navigation tiles to be generated from an array instead of manually defining them.",
+			"Added a hover effect to the navigation tiles."
+		]
+	},
+	{
 		"date": "2025-02-26",
 		"title": "1.1.0",
 		"content": "",
