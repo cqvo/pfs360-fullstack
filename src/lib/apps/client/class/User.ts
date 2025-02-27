@@ -1,4 +1,4 @@
-import { connectToDatabase } from '$lib/server/mongodb';
+import { connectToDatabase } from '$lib/server/Mongodb';
 import bcrypt from 'bcrypt';
 import { ObjectId } from 'mongodb';
 

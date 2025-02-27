@@ -1,10 +1,13 @@
 import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid';
+import { createLogger } from '$lib/server/Logger';
 import { VERCEL_ENV, PLAID_CLIENT_ID, PLAID_SECRET, VERCEL_PROJECT_PRODUCTION_URL, VERCEL_BRANCH_URL } from '$env/static/private';
+
+const logger = createLogger({ component: '$lib/server/Plaid' });
 
 export const webhookUrl =
 	VERCEL_ENV === 'production' ? `https://${VERCEL_PROJECT_PRODUCTION_URL}/api/v1/webhook` : `https://${VERCEL_BRANCH_URL}/api/v1/webhook`;
 
-console.log(`Plaid webhook URL: ${webhookUrl}`);
+logger.info(`Plaid webhook URL: ${webhookUrl}`);
 
 const configuration = new Configuration({
 	basePath: VERCEL_ENV !== 'production' ? PlaidEnvironments.sandbox : PlaidEnvironments.production,
@@ -16,8 +19,6 @@ const configuration = new Configuration({
 	},
 });
 
-console.log(`Plaid config - Env: ${configuration.basePath}; ID: ${configuration.baseOptions.headers['PLAID-CLIENT-ID']}`);
+logger.info(`Configured Plaid - Env: ${configuration.basePath}; Webhook: ${webhookUrl}; ID: ${configuration.baseOptions.headers['PLAID-CLIENT-ID']}`);
 
-const plaid = new PlaidApi(configuration);
-
-export default plaid;
+export const Plaid = new PlaidApi(configuration);

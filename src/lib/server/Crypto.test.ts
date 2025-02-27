@@ -1,5 +1,5 @@
 import { describe, it, beforeAll, expect } from 'vitest';
-import { encrypt, decrypt } from './crypto';
+import { encrypt, decrypt } from './Crypto';
 
 describe('Crypto Module', () => {
     const plaintext = 'Hello, World!';

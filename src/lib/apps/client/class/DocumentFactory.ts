@@ -1,13 +1,13 @@
-import { connectToDatabase } from '$lib/server/mongodb';
+import { connectToDatabase } from '$lib/server/Mongodb';
 import { ObjectId, type WithId, type Document } from 'mongodb';
 import type IDocument from '$lib/apps/client/type/IDocument';
 import type ILink from '$lib/apps/client/type/ILink';
 import type { LinkTokenCreateRequest } from 'plaid';
-import plaid from '$lib/server/plaid';
+import plaid from '$lib/server/Plaid';
 import { VERCEL_BRANCH_URL, VERCEL_ENV, VERCEL_PROJECT_PRODUCTION_URL } from '$env/static/private';
 
 export abstract class DocumentFactory implements IDocument {
-	abstract _id: ObjectId;
+	abstract _id: ObjectId | string;
 	abstract _collection: string;
 	abstract createdAt: Date;
 	abstract updatedAt: Date;
@@ -18,9 +18,6 @@ export abstract class DocumentFactory implements IDocument {
 	}
 	static fromRecord(record: WithId<Document>) {
 		throw new Error('fromRecord() must be implemented in the subclass');
-	}
-	static webhookUrl(): string {
-		return VERCEL_ENV === 'production' ? `https://${VERCEL_PROJECT_PRODUCTION_URL}/api/v1/webhook` : `https://${VERCEL_BRANCH_URL}/api/v1/webhook`;
 	}
 
 	pojo() {

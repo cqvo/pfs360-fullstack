@@ -1,5 +1,8 @@
 import { MongoClient, Db, ServerApiVersion } from 'mongodb';
 import { MONGODB_URI } from '$env/static/private';
+import { createLogger } from '$lib/server/Logger';
+
+const logger = createLogger({ component: '$lib/server/Mongodb' });
 
 let client: MongoClient;
 let db: Db;
@@ -22,7 +25,7 @@ export const connectToDatabase = async (): Promise<{ client: MongoClient; db: Db
 		client = new MongoClient(MONGODB_URI, options);
 		await client.connect();
 		db = client.db('pfs'); // Connect to the 'pfs' database
-		console.log('✅ Connected to MongoDB:', db.databaseName);
+		logger.info('Connected to MongoDB:', db.databaseName);
 
 		const collections = ['clients', 'accounts', 'reports', 'users'];
 		const existingCollections = await db.listCollections().toArray();
@@ -30,7 +33,7 @@ export const connectToDatabase = async (): Promise<{ client: MongoClient; db: Db
 		for (const collection of collections) {
 			if (!existingCollectionNames.includes(collection)) {
 				await db.createCollection(collection);
-				console.log(`Created collection: ${collection}`);
+				logger.info(`Created collection: ${collection}`);
 			}
 		}
 	}

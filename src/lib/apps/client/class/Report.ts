@@ -4,10 +4,10 @@ import type {
 	AssetReportGetRequest,
 	AssetReportGetResponse
 } from 'plaid';
-import plaid from '$lib/server/plaid';
+import plaid from '$lib/server/Plaid';
 import Client from '$lib/apps/client/class/Client';
 import { VERCEL_BRANCH_URL, VERCEL_ENV, VERCEL_PROJECT_PRODUCTION_URL } from '$env/static/private';
-import { connectToDatabase } from '$lib/server/mongodb';
+import { connectToDatabase } from '$lib/server/Mongodb';
 import Item from '$lib/apps/client/class/Item';
 import Account from '$lib/apps/client/class/Account';
 import type HistoricalBalance from '$lib/apps/client/type/HistoricalBalance';

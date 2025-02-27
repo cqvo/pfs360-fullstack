@@ -1,14 +1,14 @@
-import { type Document, ObjectId, type WithId } from 'mongodb';
+import { ObjectId, type Document, type WithId } from 'mongodb';
 import type ILink from '$lib/apps/client/type/ILink';
 import { CountryCode, type LinkTokenCreateRequest, Products } from 'plaid';
-import plaid from '$lib/server/plaid';
+import { Plaid, webhookUrl } from '$lib/server/Plaid';
 import { DocumentFactory } from '$lib/apps/client/class/DocumentFactory';
 import { PLAID_CLIENT_NAME, PLAID_EMAIL } from '$env/static/private';
 
 export default class Client extends DocumentFactory {
-	_id: ObjectId;
-	clientId: string;
-	companyName: string;S
+	_id: string;
+	_collection: string = Client.collectionName();
+	companyName: string;
 	email: string;
 	links: ILink[];
 	items: string[];
@@ -19,21 +19,28 @@ export default class Client extends DocumentFactory {
 		return 'clients';
 	}
 
-	constructor(props) {
-		super();
-		this.clientId = props.clientId;
-		this.companyName = props.companyName;
-		this.email = props.email;
-		this.links = props.links || [];
-		this.items = props.items || [];
-		this.createdAt = props.createdAt || new Date();
-		this.updatedAt = props.updatedAt || new Date();
+	constructor({ _id, companyName, email, links, items, createdAt, updatedAt }) {
+		this._id: _id;
+		this.companyName = companyName;
+		this.email = email;
+		this.links = links || [];
+		this.items = items || [];
+		this.createdAt = createdAt || new Date();
+		this.updatedAt = updatedAt || new Date();
+	}
+
+	static fromTaxdomeCsv(row: Record<string, string>) {
+		const props = {
+			_id: row['taxdomeId'],
+			companyName: row['companyName'],
+			email: row['email']
+		};
+		return new Client(props);
 	}
 
 	static fromRecord(record: WithId<Document>) {
 		const props = {
 			_id: record['_id'],
-			clientId: record['client_id'] || record['taxdome_id'],
 			companyName: record['company_name'],
 			email: record['email_address'],
 			links: record['links'],
@@ -58,17 +65,17 @@ export default class Client extends DocumentFactory {
 
 	async createNewLink() {
 		const request: LinkTokenCreateRequest = {
-			'user': {
-			'client_user_id': this.taxdomeId || this.clientId,
-				'email_address': PLAID_EMAIL || 'pfs@wumbo.tech',
-		},
-			'client_name': PLAID_CLIENT_NAME || 'PFS360',
-			'products': [Products.Assets],
-			'country_codes': [CountryCode.Us],
-			'language': 'en',
-			'webhook': Client.webhookUrl(),
-		}
-		const response = await plaid.linkTokenCreate(request);
+			user: {
+				client_user_id: this._id,
+				email_address: PLAID_EMAIL || 'pfs@wumbo.tech'
+			},
+			client_name: PLAID_CLIENT_NAME || 'PFS360',
+			products: [Products.Assets],
+			country_codes: [CountryCode.Us],
+			language: 'en',
+			webhook: Client.webhookUrl()
+		};
+		const response = await Plaid.linkTokenCreate(request);
 		if (!response || !response.data) throw new Error(`Client createNewLink: No response data`);
 		const link: ILink = {
 			linkToken: response.data['link_token'],

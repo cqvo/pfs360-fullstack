@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { error, type Actions } from '@sveltejs/kit';
-import logger from '$lib/logger';
+import logger from '$lib/server/Logger';
 import Client from '$lib/apps/client/class/Client';
 import Link from '$lib/apps/client/class/Link';
 import Item from '$lib/apps/client/class/Item';

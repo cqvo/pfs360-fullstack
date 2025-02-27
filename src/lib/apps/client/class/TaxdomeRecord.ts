@@ -1,4 +1,4 @@
-import { connectToDatabase } from '$lib/server/mongodb';
+import { connectToDatabase } from '$lib/server/Mongodb';
 import { parse } from 'csv-parse/sync';
 
 export default class TaxdomeRecord {

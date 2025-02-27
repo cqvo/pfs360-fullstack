@@ -1,6 +1,6 @@
 import type HistoricalBalance from '$lib/apps/client/type/HistoricalBalance';
 import type Transaction from '$lib/apps/client/type/Transaction';
-import { connectToDatabase } from '$lib/server/mongodb';
+import { connectToDatabase } from '$lib/server/Mongodb';
 import type { Db } from 'mongodb';
 
 export default class Account {

@@ -1,4 +1,4 @@
-import { connectToDatabase } from '$lib/server/mongodb';
+import { connectToDatabase } from '$lib/server/Mongodb';
 import type { LinkTokenCreateRequest } from 'plaid';
 import { CountryCode, Products } from 'plaid';
 import {
@@ -7,7 +7,7 @@ import {
 	VERCEL_ENV,
 	VERCEL_PROJECT_PRODUCTION_URL
 } from '$env/static/private';
-import plaid from '$lib/server/plaid';
+import plaid from '$lib/server/Plaid';
 import Client from '$lib/apps/client/class/Client';
 import { ObjectId } from 'mongodb';
 

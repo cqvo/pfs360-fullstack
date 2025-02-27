@@ -1,5 +1,5 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { connectToDatabase } from '$lib/server/mongodb';
+import { connectToDatabase } from '$lib/server/Mongodb';
 
 export const GET: RequestHandler = async ({ params }) => {
 	const accountId = params.accountId;
