@@ -7,8 +7,6 @@ const logger = createLogger({ component: '$lib/server/Plaid' });
 export const webhookUrl =
 	VERCEL_ENV === 'production' ? `https://${VERCEL_PROJECT_PRODUCTION_URL}/api/v1/webhook` : `https://${VERCEL_BRANCH_URL}/api/v1/webhook`;
 
-logger.info(`Plaid webhook URL: ${webhookUrl}`);
-
 const configuration = new Configuration({
 	basePath: VERCEL_ENV !== 'production' ? PlaidEnvironments.sandbox : PlaidEnvironments.production,
 	baseOptions: {

@@ -15,11 +15,8 @@ export default class Client extends DocumentFactory {
 	createdAt: Date;
 	updatedAt: Date;
 
-	static collectionName() {
-		return 'clients';
-	}
-
 	constructor({ _id, companyName, email, links, items, createdAt, updatedAt }) {
+		super();
 		this._id: _id;
 		this.companyName = companyName;
 		this.email = email;
@@ -27,6 +24,14 @@ export default class Client extends DocumentFactory {
 		this.items = items || [];
 		this.createdAt = createdAt || new Date();
 		this.updatedAt = updatedAt || new Date();
+	}
+
+	static collectionName() {
+		return 'clients';
+	}
+
+	static webhookUrl() {
+		return webhookUrl;
 	}
 
 	static fromTaxdomeCsv(row: Record<string, string>) {

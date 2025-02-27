@@ -1,13 +1,3 @@
-import type { AccountBase, Item } from 'plaid';
-
-export default interface IItem extends Item {
-	itemId: string;
-	institutionName: string;
-	_encryptedToken: string;
-	_ivHexString: string;
-	accounts: AccountBase[];
-}
-
 // item_id: string
 // institution_id?: string | null
 // webhook: string | null
@@ -18,3 +8,15 @@ export default interface IItem extends Item {
 // consented_products?: Array<Products>
 // consent_expiration_time: string | null
 // update_type: ItemUpdateTypeEnum
+
+export default interface IAccount {
+	accountId: string;
+	institutionName: string;
+	itemId: string;
+	name: string;
+	mask: string;
+	type: string;
+	subtype: string;
+	createdAt: Date;
+	updatedAt: Date;
+}

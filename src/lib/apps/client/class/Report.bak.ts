@@ -6,7 +6,6 @@ import type {
 } from 'plaid';
 import plaid from '$lib/server/Plaid';
 import Client from '$lib/apps/client/class/Client';
-import DocumentFactory from '$lib/apps/client/class/DocumentFactory';
 import { VERCEL_BRANCH_URL, VERCEL_ENV, VERCEL_PROJECT_PRODUCTION_URL } from '$env/static/private';
 import { connectToDatabase } from '$lib/server/Mongodb';
 import Item from '$lib/apps/client/class/Item';
@@ -16,28 +15,21 @@ import type HistoricalBalance from '$lib/apps/client/type/HistoricalBalance';
 const	WEBHOOK_URL =
 	VERCEL_ENV === 'production' ? `https://${VERCEL_PROJECT_PRODUCTION_URL}/api/v1/webhook` : `https://${VERCEL_BRANCH_URL}/api/v1/webhook`;
 
-// We don't do a lot with the report data in this class, but we do need to store it in the database.
-// This is necessary since we make requests and then hydrate it once we receive the webhook.
-
-export default class Report extends DocumentFactory {
-	_id: string;
-	_collection: string = Report.collectionName();
+export default class Report {
+	reportToken: string;
+	reportId: string;
+	requestId: string;
+	raw?: AssetReportGetResponse;
 	createdAt: Date;
 	updatedAt: Date;
-	clientId: string;
-	daysRequested: string;
-	generatedAt: Date;
 
-
-	constructor() {
-		this._id = _id;
-		this.clientId = clientId;
+	constructor(reportToken: string, reportId: string, requestId: string, raw?: AssetReportGetResponse, createdAt?: Date, updatedAt?: Date) {
+		this.reportToken = reportToken;
+		this.reportId = reportId;
+		this.requestId = requestId;
+		this.raw = raw;
 		this.createdAt = createdAt || new Date();
 		this.updatedAt = updatedAt || new Date();
-	}
-
-	static collectionName() {
-		return 'reports';
 	}
 
 	static async fetchReport(request: AssetReportGetRequest) {
@@ -117,7 +109,7 @@ export default class Report extends DocumentFactory {
 		const result = await collection.updateOne(
 			{	'asset_report_id': this.reportId },
 			{ $set: { raw: this.raw, updatedAt: this.updatedAt } },
-			);
+		);
 		console.log('Report updateReport', result);
 		return result;
 	}
