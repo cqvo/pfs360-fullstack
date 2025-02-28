@@ -16,10 +16,8 @@ export const actions = {
 				});
 			}
 			logger.info('uploadCsv() Received file:', file.name);
-			TaxdomeRecord.processCsv(file).catch((err) => {
-				throw err;
-			});
-			return { success: true};
+			await TaxdomeRecord.processCsv(file);
+			return { success: true };
 		} catch (err) {
 			logger.error('uploadCsv() Error:', err);
 			return fail(500, err);
