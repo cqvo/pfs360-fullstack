@@ -39,11 +39,19 @@ export default class TaxdomeRecord {
 
 	static async processCsv(file: File) {
 		const content: string = await file.text();
-		const clients: TaxdomeRecord[] = parse(content, {
+		const parsedData = parse(content, {
 			columns: ['taxdomeId', 'companyName', 'emailAddress'],
 			skip_empty_lines: true
-		}).map((row: TaxdomeRecord) =>
-			new TaxdomeRecord(row.taxdomeId, row.companyName, row.emailAddress)
+		});
+		const firstRow = parsedData[0];
+		if (firstRow && Object.keys(firstRow).length !== 3) {
+			throw new Error('CSV must contain exactly 3 columns');
+		}
+		const clients: TaxdomeRecord[] = parsedData.map((row: TaxdomeRecord, index: number) => {
+			if (row.emailAddress && !row.emailAddress.includes('@')) {
+				throw new Error(`Invalid email address at row ${index + 1}: ${row.emailAddress}`);
+			}
+			new TaxdomeRecord(row.taxdomeId, row.companyName, row.emailAddress);}
 		);
 		if (clients.length === 0) {
 			throw new Error('No records found in CSV');
