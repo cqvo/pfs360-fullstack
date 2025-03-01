@@ -1,87 +1,38 @@
 <script lang="ts">
-	// import type { PageProps } from './$types';
-	import { enhance } from '$app/forms';
-	import { Tabs } from '@skeletonlabs/skeleton-svelte';
 	import { getContext } from 'svelte';
-	import { type ToastContext } from '@skeletonlabs/skeleton-svelte';
-	import { Check } from 'lucide-svelte'
+	import { Tabs } from '@skeletonlabs/skeleton-svelte';
+	import { ROLES, hasPermission } from '$lib/UserPermissions';
+	import UserChangePassword from '$lib/components/UserChangePassword.svelte';
+	import UserManagement from '$lib/components/UserManagement.svelte';
 
-	export const toast: ToastContext = getContext('toast');
-	let { data } = $props();
-	let group = $state('changePassword');
-	let currentPassword = $state('');
-	let newPassword = $state('');
-	let confirmPassword = $state('');
-	let newPasswordValid = $derived(newPassword.length >= 8);
-	let newPasswordConfirmed = $derived(newPassword === confirmPassword && confirmPassword !== '');
+	// let group = $state('changePassword');
 
-	const changePasswordHandler = (data) => {
-		const toastOptions = {
-			title: data.success? 'Success' : 'Error',
-			description: data.success ? 'Password changed successfully' : data.message,
-			type: data.success ? 'success' : 'error',
+	const user = getContext('user');
+	const hasAdmin = hasPermission(user.role, ROLES.ADMIN);
+
+	let userManagementMounted = $state(false);
+	const mountUserManagement = ({ value }) => {
+		if (value === 'manageUsers') {
+			userManagementMounted = true;
 		}
-		toast.create(toastOptions);
-		currentPassword = '';
-		newPassword = '';
-		confirmPassword = '';
-	}
+	};
 </script>
 
-<Tabs bind:value={group}>
+<Tabs value="changePassword" onValueChange={(value) => mountUserManagement(value)}>
 	{#snippet list()}
 		<Tabs.Control value="changePassword">Change Password</Tabs.Control>
-		{#if data.role === 'admin'}<Tabs.Control value="manageUsers">Manage Users</Tabs.Control>{/if}
+		<Tabs.Control value="manageUsers" classes={hasAdmin ? '' : 'disabled'}>
+			Manage Users
+		</Tabs.Control>
 	{/snippet}
 	{#snippet content()}
 		<Tabs.Panel value="changePassword">
-			<div class="mx-auto max-w-md">
-				<form class="space-y-2" action="?/changePassword" method="post" use:enhance={() => {
-					return async ({result}) => {
-						changePasswordHandler(result.data);
-					}
-				}}>
-					<label class="label">
-						<span class="label-text">Current Password</span>
-						<input
-							class="input"
-							type="password"
-							name="currentPassword"
-							bind:value={currentPassword}
-						/>
-					</label>
-					<label class="label">
-						<div class="flex"><span class="label-text">New Password</span>{#if newPasswordValid}<Check size={16} color="#00b300" />{/if}</div>
-
-						<input class="input" type="password" name="newPassword" bind:value={newPassword} />
-					</label>
-					<label class="label">
-						<div class="flex"><span class="label-text">Confirm New Password</span>{#if newPasswordConfirmed}<Check size={16} color="#00b300" />{/if}</div>
-						<input
-							class="input"
-							type="password"
-							name="confirmPassword"
-							bind:value={confirmPassword}
-						/>
-					</label>
-					<div class="label-text">
-					<p class="font-extrabold">Requirements</p>
-					<ul class="list-inside list-disc">
-						<li>Minimum 8 characters</li>
-					</ul></div>
-					<button
-						class="btn preset-tonal-primary my-4"
-						disabled={!newPasswordValid || !newPasswordConfirmed}
-					>
-						Change Password
-					</button>
-				</form>
-			</div>
+			<UserChangePassword />
 		</Tabs.Panel>
-		{#if data.role === 'admin'}
-			<Tabs.Panel value="manageUsers">
-				asdfasdfasdf
-			</Tabs.Panel>
+		<Tabs.Panel value="manageUsers">
+			{#if userManagementMounted}
+				<UserManagement />
 			{/if}
+		</Tabs.Panel>
 	{/snippet}
 </Tabs>

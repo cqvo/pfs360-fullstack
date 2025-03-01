@@ -1,5 +1,22 @@
 [
 	{
+		"date": "tbd",
+		"title": "1.2.0",
+		"content": "",
+		"list": [
+			"Added user management functionality."
+		]
+	},
+	{
+		"date": "2025-02-28",
+		"title": "1.1.2",
+		"content": "",
+		"list": [
+			"Added a new logger to the server to save errors to file.",
+			"Added unit testing to the upload functionality."
+		]
+	},
+	{
 		"date": "2025-02-27",
 		"title": "1.1.1",
 		"content": "",
