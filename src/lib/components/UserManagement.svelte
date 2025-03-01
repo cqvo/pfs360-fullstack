@@ -46,7 +46,7 @@
 						<td>{user.email}</td>
 						<td>{user.role}</td>
 						<td>{new Date(user.updatedAt).toLocaleDateString()}</td>
-						<td><ModalUserOptions {user} /> <ModalDeleteUser {user} refreshUsers={fetchUsers} /></td>
+						<td><ModalUserOptions {user} refreshUsers={fetchUsers} /> <ModalDeleteUser {user} refreshUsers={fetchUsers} /></td>
 					</tr>
 				{/each}
 			</tbody>

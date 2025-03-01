@@ -110,4 +110,21 @@ export default class User {
 			throw new Error('Failed to delete user.');
 		}
 	}
+
+	async updateRole(role: Role) {
+		const { db } = await connectToDatabase();
+		const collection = db.collection('users');
+		const result = await collection.updateOne(
+			{ _id: this.id },
+			{
+				$set: {
+					role: role,
+					updatedAt: new Date()
+				}
+			}
+		);
+		if (result.modifiedCount !== 1) {
+			throw new Error('Failed to update role.');
+		}
+	}
 }

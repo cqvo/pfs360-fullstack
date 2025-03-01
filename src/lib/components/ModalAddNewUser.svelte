@@ -28,15 +28,12 @@
 	open={openState}
 	onOpenChange={(e) => (openState = e.open)}
 	triggerBase="btn preset-tonal-primary"
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-lg"
+	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl w-full max-w-screen-sm"
 	backdropClasses="backdrop-blur-sm"
 >
 	{#snippet trigger()}Add New User{/snippet}
 	{#snippet content()}
-		<header class="flex justify-between">
-			<h2 class="h2">New User</h2>
-		</header>
-		<form
+		<form class="space-y-4"
 			method="POST"
 			action="/user?/createUser"
 			use:enhance={() => {
@@ -48,6 +45,10 @@
 				};
 			}}
 		>
+		<header class="flex justify-between">
+			<h2 class="h2">New User</h2>
+		</header>
+
 			<article>
 				<label class="label">
 					<span class="label-text">Email</span>

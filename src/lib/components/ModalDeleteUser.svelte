@@ -28,7 +28,7 @@
 	open={openState}
 	onOpenChange={(e) => (openState = e.open)}
 	triggerBase="btn preset-tonal-error"
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-lg"
+	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm w-full"
 	backdropClasses="backdrop-blur-sm"
 >
 	{#snippet trigger()}Delete{/snippet}

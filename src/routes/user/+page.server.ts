@@ -30,7 +30,15 @@ export const actions: Actions = {
 					message: 'Current password is incorrect.'
 				};
 			}
-			// await user.updatePassword(newPassword);
+			const newPassword = data.get('newPassword');
+			if (!newPassword) {
+				logger.info(`changePassword() - No value for new password.`);
+				return {
+					success: false,
+					message: 'No value for new password.'
+				};
+			}
+			await user.updatePassword(newPassword);
 			logger.info(`changePassword() - User ${email} updated password.`);
 			return {
 				success: true,
@@ -95,5 +103,37 @@ export const actions: Actions = {
 				message: 'Database error.'
 			};
 		}
-	}
+	},
+	updateRole: async ({ request }) => {
+		const data = await request.formData();
+		const email = data.get('email');
+		try {
+			const user = await User.findOne(email);
+			if (!user) {
+				return {
+					success: false,
+					message: 'User not found.'
+				};
+			}
+			const role = data.get('role');
+			if (!role) {
+				return {
+					success: false,
+					message: 'No role provided.'
+				};
+			}
+			await user.updateRole(role);
+			logger.info(`updateUser() - User ${email} updated role to ${role}.`);
+			return {
+				success: true,
+				message: `User role changed to ${role}.`
+			};
+		} catch (err) {
+			logger.error('Database error:', err);
+			return {
+				success: false,
+				message: 'Database error.'
+			};
+		}
+	},
 };
