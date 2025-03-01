@@ -1,11 +1,14 @@
 <script lang="ts">
-	import type { PageData } from '../../../../../.svelte-kit/types/src/routes';
-	import { onMount } from 'svelte';
+	import type { PageData } from './$types';
+	import { getContext, onMount } from 'svelte';
 	import { enhance } from '$app/forms';
-	import { Accordion, Modal } from '@skeletonlabs/skeleton-svelte';
+	import { Accordion, Modal, type ToastContext } from '@skeletonlabs/skeleton-svelte';
+	import { ROLES, hasPermission } from '$lib/UserPermissions';
+
 	let { data }: { data: PageData } = $props();
-	import { getContext } from 'svelte';
-	import { type ToastContext } from '@skeletonlabs/skeleton-svelte';
+
+	const user = getContext('user');
+	const hasRequester = hasPermission(user.role, ROLES.REQUESTER);
 
 	export const toast: ToastContext = getContext('toast');
 	const triggerRequestData = (success) => {
@@ -134,7 +137,7 @@
 						}
 					}}>
 						<input class="hidden" name="itemIndex" value={itemIndex} />
-						<button type="submit" class="btn preset-tonal-primary {enableRequestData ? '' : 'disabled'}" onclick={disableRequestData}> Request New Data </button>
+						<button type="submit" class="btn preset-tonal-primary {enableRequestData && hasRequester ? '' : 'disabled'}" onclick={disableRequestData}> Request New Data </button>
 					</form>
 					<div class="table-wrap">
 						<table class="table">
