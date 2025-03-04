@@ -54,7 +54,7 @@ export default class Report {
 	}
 
 	static constructCreateRequest(client: Client, item: Item): AssetReportCreateRequest {
-		const daysRequested = 61;
+		const daysRequested = 120;
 		const options: AssetReportCreateRequestOptions = {
 			'webhook': WEBHOOK_URL,
 			'user': {
