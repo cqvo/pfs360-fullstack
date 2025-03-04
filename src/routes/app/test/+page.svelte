@@ -1,5 +1,8 @@
 <script lang="ts">
-	import Updates from '$lib/components/Updates.svelte'
+	import FancyInput from './FancyInput.svelte';
+	let { data } = $props();
+	let message = $state(JSON.stringify(data.users));
 </script>
 
-<Updates />
+<FancyInput bind:value={message} />
+<p>{message}</p>
