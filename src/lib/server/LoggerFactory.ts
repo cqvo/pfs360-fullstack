@@ -1,4 +1,5 @@
 import winston from 'winston';
+import path from 'path';
 import { browser } from '$app/environment';
 import { VERCEL_ENV } from '$env/static/private';
 
@@ -50,6 +51,36 @@ export const createLogger = (context: LoggerContext) => {
 	// Determine log level from environment
 	const level = VERCEL_ENV === 'production' ? 'info' : 'debug';
 
+	// Define transports array
+	const transports: winston.transport[] = [
+		// Console transport for all environments
+		new winston.transports.Console({
+			format: winston.format.combine(
+				winston.format.colorize({ all: true }),
+				winston.format.printf(
+					(info) => `${info.timestamp} ${info.level}: [${info.context.component}] ${info.message}`
+				)
+			),
+		}),
+	];
+
+	// Add file transports only in production on Vercel
+	if (VERCEL_ENV === 'production') {
+		// Use /tmp directory for logs on Vercel
+		const logDir = '/tmp/logs';
+
+		// Add file transports
+		transports.push(
+			new winston.transports.File({
+				filename: path.join(logDir, 'error.log'),
+				level: 'error'
+			}),
+			new winston.transports.File({
+				filename: path.join(logDir, 'combined.log')
+			})
+		);
+	}
+
 	// Create and return the Winston logger
 	return winston.createLogger({
 		levels,
@@ -64,29 +95,7 @@ export const createLogger = (context: LoggerContext) => {
 			service: 'sveltekit-app',
 			context
 		},
-		transports: [
-			// Console transport for development
-			new winston.transports.Console({
-				format: winston.format.combine(
-					winston.format.colorize({ all: true }),
-					winston.format.printf(
-						(info) => `${info.timestamp} ${info.level}: [${info.context.component}] ${info.message}`
-					)
-				),
-			}),
-			// File transport for production
-			...(VERCEL_ENV === 'production'
-				? [
-					new winston.transports.File({
-						filename: 'logs/error.log',
-						level: 'error'
-					}),
-					new winston.transports.File({
-						filename: 'logs/combined.log'
-					}),
-				]
-				: []),
-		],
+		transports,
 	});
 };
 
