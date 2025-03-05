@@ -137,7 +137,7 @@
 						}
 					}}>
 						<input class="hidden" name="itemIndex" value={itemIndex} />
-						<button type="submit" class="btn preset-tonal-primary {enableRequestData && hasRequester ? '' : 'disabled'}" onclick={disableRequestData}> Request New Data </button>
+						<button type="submit" class="btn preset-tonal-primary {enableRequestData && hasRequester ? '' : 'disabled'}" onclick={disableRequestData}> Request Data from Last 120 Days </button>
 					</form>
 					<div class="table-wrap">
 						<table class="table">
