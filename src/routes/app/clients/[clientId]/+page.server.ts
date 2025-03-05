@@ -9,8 +9,6 @@ import Report from '$lib/apps/client/class/Report';
 export const load: PageServerLoad = async ({ params }) => {
 	try {
 		const client = await Client.findOne(params.clientId);
-		console.log('pageserverload', client.companyName);
-		console.log('pageserverload', client.items);
 		return {
 			companyName: client.companyName,
 			items: client.items,

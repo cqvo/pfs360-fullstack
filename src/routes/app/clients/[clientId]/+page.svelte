@@ -14,16 +14,14 @@
 	const hasRequester = hasPermission(user.role, ROLES.REQUESTER);
 
 	const triggerRequestData = (success) => {
-		toast.create({ description: 'New data requested.'})
-	}
+		toast.create({ description: 'New data requested.' });
+	};
 
 	const disableRequestData = () => {
 		enableRequestData = false;
 	};
 
 	export const toast: ToastContext = getContext('toast');
-
-	$inspect(data);
 </script>
 
 <h1 class="h1">{data.companyName}</h1>
@@ -32,21 +30,32 @@
 <div class="flex gap-4 p-4">
 	<Accordion {accordionState} multiple>
 		{#each data.items as item, itemIndex}
-			<Accordion.Item value={item.institutionName}
-											base="border-[1px] border-surface-200-800 w-full"
+			<Accordion.Item
+				value={item.institutionName}
+				base="border-[1px] border-surface-200-800 w-full"
 			>
 				<!-- Control -->
 				{#snippet control()}
 					<span class="h4">{item.institutionName}</span>{/snippet}
 				<!-- Panel -->
 				{#snippet panel()}
-					<form method="POST" action="?/requestData" use:enhance={() => {
-						return async ({result}) => {
-							triggerRequestData(result.data.success);
-						}
-					}}>
+					<form
+						method="POST"
+						action="?/requestData"
+						use:enhance={() => {
+							return async ({ result }) => {
+								triggerRequestData(result.data.success);
+							};
+						}}
+					>
 						<input class="hidden" name="itemIndex" value={itemIndex} />
-						<button type="submit" class="btn preset-tonal-primary {enableRequestData && hasRequester ? '' : 'disabled'}" onclick={disableRequestData}> Request New Data </button>
+						<button
+							type="submit"
+							class="btn preset-tonal-primary {enableRequestData && hasRequester ? '' : 'disabled'}"
+							onclick={disableRequestData}
+						>
+							Request New Data
+						</button>
 					</form>
 					<div class="table-wrap">
 						<table class="table">

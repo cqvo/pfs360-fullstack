@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { LoaderCircle } from 'lucide-svelte';
+	import { invalidateAll } from '$app/navigation';
+	import { createLogger } from '$lib/server/LoggerFactory';
 
 	let Plaid = $state();
 	let handler = $state();
 	let isSdkLoaded = $state(false);
 	let loadingFlag = $state(false);
+
+	const logger = createLogger({ component: 'PlaidLink.svelte'});
 
 	const loadPlaidSdk = () => {
 		try {
@@ -14,7 +18,7 @@
 			script.async = true;
 			document.body.appendChild(script);
 		} catch (error) {
-			console.error('Failed to load Plaid SDK:', error);
+			logger.error('Failed to load Plaid SDK:', error);
 		}
 	};
 
@@ -26,7 +30,7 @@
 			const backoffTime = retryInterval * Math.pow(1.5, retryCount - 1);
 			await new Promise((resolve) => setTimeout(resolve, backoffTime));
 		}
-		console.error('Plaid SDK failed to load');
+		logger.error('Plaid SDK failed to load');
 		return false;
 	};
 
@@ -37,9 +41,31 @@
 		const linkToken = await fetchToken();
 		handler = Plaid.create({
 			token: linkToken,
-			...config
+			onLoad: () => {
+				openPlaid();
+			},
+			onSuccess: async (publicToken, metadata) => {
+				await fetch('?/onSuccess', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+					body: new URLSearchParams({
+						publicToken: publicToken,
+						metadata: JSON.stringify(metadata),
+						linkToken: linkToken
+					})
+				});
+				await invalidateAll();
+			},
+			onExit: (err, metadata) => {},
+			onEvent: (eventName, metadata) => {
+				if (eventName === 'OPEN') {
+					loadingFlag = false;
+				}
+			}
 		});
-	}
+	};
 
 	const fetchToken = async () => {
 		const response = await fetch('?/newToken', {
@@ -52,32 +78,7 @@
 		const result = await response.json();
 		const parsed = JSON.parse(result.data);
 		return parsed[2];
-	}
-
-	const config = {
-		onLoad: () => { openPlaid(); },
-		onSuccess: async (publicToken, metadata) => {
-			console.log('Plaid onSuccess:', metadata);
-			await fetch('?/onSuccess', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				},
-				body: new URLSearchParams({
-					publicToken: publicToken,
-					metadata: JSON.stringify(metadata),
-					linkToken: linkToken
-				})
-			});
-		},
-		onExit: (err, metadata) => {},
-		onEvent: (eventName, metadata) => {
-			if (eventName === 'OPEN') {
-				loadingFlag = false;
-			}
-		}
-	}
-
+	};
 
 	const openPlaid = () => {
 		if (!handler) {
@@ -86,21 +87,23 @@
 		} else {
 			handler.open();
 		}
-	}
+	};
 
 	onMount(() => {
-			loadPlaidSdk();
-		}
-	);
-
+		loadPlaidSdk();
+	});
 </script>
 
 <div class="max-w-fit">
-<button type="button" class="btn preset-filled-primary-500 w-full {loadingFlag ? 'disabled' : ''}" onclick={openPlaid}>
-	{#if loadingFlag}
-		<LoaderCircle strokeWidth={3} class="animate-spin opacity-60" /> Loading...
+	<button
+		type="button"
+		class="btn w-full preset-filled-primary-500 {loadingFlag ? 'disabled' : ''}"
+		onclick={openPlaid}
+	>
+		{#if loadingFlag}
+			<LoaderCircle strokeWidth={3} class="animate-spin opacity-60" /> Loading...
 		{:else}
-		Link New Bank
-	{/if}
-</button>
+			Link New Bank
+		{/if}
+	</button>
 </div>
