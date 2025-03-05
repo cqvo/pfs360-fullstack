@@ -2,14 +2,11 @@
 	import { onMount } from 'svelte';
 	import { LoaderCircle } from 'lucide-svelte';
 	import { invalidateAll } from '$app/navigation';
-	import { createLogger } from '$lib/server/LoggerFactory';
 
 	let Plaid = $state();
 	let handler = $state();
 	let isSdkLoaded = $state(false);
 	let loadingFlag = $state(false);
-
-	const logger = createLogger({ component: 'PlaidLink.svelte'});
 
 	const loadPlaidSdk = () => {
 		try {
@@ -18,7 +15,7 @@
 			script.async = true;
 			document.body.appendChild(script);
 		} catch (error) {
-			logger.error('Failed to load Plaid SDK:', error);
+			console.error('Failed to load Plaid SDK:', error);
 		}
 	};
 
@@ -30,7 +27,7 @@
 			const backoffTime = retryInterval * Math.pow(1.5, retryCount - 1);
 			await new Promise((resolve) => setTimeout(resolve, backoffTime));
 		}
-		logger.error('Plaid SDK failed to load');
+		console.error('Plaid SDK failed to load');
 		return false;
 	};
 
